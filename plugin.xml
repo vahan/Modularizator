@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
+   <extension point="org.eclipse.ui.popupMenus"> 
+      <objectContribution 
+            id="modularization.popup.object"
+            objectClass="org.eclipse.core.resources.IResource">
+      <menu
+            label="Modularizator"
+            id="Modularizator.menu1">
+         <separator
+               name="group1">
+         </separator>
+      </menu>
+      <action
+            id="modularization.object.action1" 
+            label="Modularize"
+            icon="icons/sample.gif"
+            class="modularizator.actions.PackageModularizeAction"
+            menubarPath="Modularizator.menu1/group1">
+      </action> 
+   </objectContribution> 
+</extension>
+
+   <!--<extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            id="Modularizator.actionSet"
+            id="modularizator.actionSet"
             label="Sample Action Set"
             visible="true">
          <menu
@@ -15,18 +36,14 @@
             </separator>
          </menu>
          <action
+               id="modularizator.actions.PackageModularizeAction"
                class="modularizator.actions.PackageModularizeAction"
                icon="icons/sample.gif"
-               id="modularizator.actions.PackageModularizeAction"
                label="&amp;Modularize"
                menubarPath="modularizatorMenu/modularizatorMenu"
                toolbarPath="sampleGroup"
                tooltip="Give tips on modularization">
          </action>
       </actionSet>
-   </extension>
-   <extension
-         point="org.eclipse.ui.workingSets">
-   </extension>
-
+   </extension>-->
 </plugin>

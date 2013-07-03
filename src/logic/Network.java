@@ -22,7 +22,6 @@ public class Network extends DefaultDirectedGraph<Vertex, DefaultEdge> {
 		super(edgeClass);
 		
 		this.clusters = clusters;
-		// TODO Auto-generated constructor stub
 	}
 	
 	

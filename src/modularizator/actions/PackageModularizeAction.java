@@ -8,11 +8,14 @@ import logic.Scorer;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
+
 
 /**
  * Our sample action implements workbench action delegate.
@@ -22,9 +25,9 @@ import org.jgrapht.graph.DefaultEdge;
  * delegated to it.
  * @see IWorkbenchWindowActionDelegate
  */
-public class PackageModularizeAction implements IWorkbenchWindowActionDelegate {
+public class PackageModularizeAction implements IObjectActionDelegate {
 	
-	private IWorkbenchWindow window;
+	private Shell shell;
 	
 	private PackageModularizator modularizator;
 	
@@ -43,10 +46,7 @@ public class PackageModularizeAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	/**
-	 * The action has been activated. The argument of the
-	 * method represents the 'real' action sitting
-	 * in the workbench UI.
-	 * @see IWorkbenchWindowActionDelegate#run
+	 * @see IActionDelegate#run(IAction)
 	 */
 	@Override
 	public void run(IAction action) {
@@ -56,47 +56,31 @@ public class PackageModularizeAction implements IWorkbenchWindowActionDelegate {
 		showOptimizedGraph(optimizedGraph);
 		
 		MessageDialog.openInformation(
-			window.getShell(),
+			shell.getShell(),
 			"Package Modularizator Tips",
 			"See individual files for tips");
 	}
 
+
 	/**
-	 * Selection in the workbench has been changed. We 
-	 * can change the state of the 'real' action here
-	 * if we want, but this can only happen after 
-	 * the delegate has been created.
-	 * @see IWorkbenchWindowActionDelegate#selectionChanged
+	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
 	 */
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
 	}
 
-	/**
-	 * We can use this method to dispose of any system
-	 * resources we previously allocated.
-	 * @see IWorkbenchWindowActionDelegate#dispose
-	 */
-	@Override
-	public void dispose() {
-	}
-
-	/**
-	 * We will cache window object in order to
-	 * be able to provide parent shell for the message dialog.
-	 * @see IWorkbenchWindowActionDelegate#init
-	 */
-	@Override
-	public void init(IWorkbenchWindow window) {
-		this.window = window;
-	}
-	
 	
 	private void showOptimizedGraph(DirectedGraph<Vertex, DefaultEdge> graph) {
 		MessageDialog.openInformation(
-				window.getShell(),
+				shell.getShell(),
 				"TODO",
 				"show the graph tips on individual project files");
 		//TODO: show the graph tips on individual project files
+	}
+
+	@Override
+	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
+		shell = targetPart.getSite().getShell();
+		
 	}
 }

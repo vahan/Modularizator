@@ -7,7 +7,6 @@ public class PackageModularizator extends Modularizator {
 	
 	public PackageModularizator(int nSteps) {
 		super(nSteps);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
