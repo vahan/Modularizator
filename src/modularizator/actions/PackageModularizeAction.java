@@ -2,7 +2,7 @@ package modularizator.actions;
 
 import logic.Algorithm;
 import logic.MarceloAlgorithm;
-import logic.Module;
+import logic.Vertex;
 import logic.PackageModularizator;
 import logic.Scorer;
 
@@ -32,12 +32,14 @@ public class PackageModularizeAction implements IWorkbenchWindowActionDelegate {
 	
 	private Scorer scorer;
 	
+	private static final int nSteps = 1000; //TODO: make user-defined
+	
 	/**
 	 * The constructor.
 	 */
 	public PackageModularizeAction() {
-		modularizator = new PackageModularizator();
-		algorithm = new MarceloAlgorithm(modularizator.getGraph());
+		modularizator = new PackageModularizator(nSteps);
+		algorithm = new MarceloAlgorithm(modularizator.getNetwork(), nSteps);
 	}
 
 	/**
@@ -49,7 +51,7 @@ public class PackageModularizeAction implements IWorkbenchWindowActionDelegate {
 	@Override
 	public void run(IAction action) {
 		
-		DirectedGraph<Module, DefaultEdge> optimizedGraph = algorithm.optimize(scorer);
+		DirectedGraph<Vertex, DefaultEdge> optimizedGraph = algorithm.optimize(scorer);
 		
 		showOptimizedGraph(optimizedGraph);
 		
@@ -90,7 +92,7 @@ public class PackageModularizeAction implements IWorkbenchWindowActionDelegate {
 	}
 	
 	
-	private void showOptimizedGraph(DirectedGraph<Module, DefaultEdge> graph) {
+	private void showOptimizedGraph(DirectedGraph<Vertex, DefaultEdge> graph) {
 		MessageDialog.openInformation(
 				window.getShell(),
 				"TODO",

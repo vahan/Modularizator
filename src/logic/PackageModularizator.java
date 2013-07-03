@@ -1,12 +1,17 @@
 package logic;
 
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
 
 public class PackageModularizator extends Modularizator {
 
+	
+	
+	public PackageModularizator(int nSteps) {
+		super(nSteps);
+		// TODO Auto-generated constructor stub
+	}
+
 	@Override
-	protected DirectedGraph<Module, DefaultEdge> getModuleGraph() {
+	protected Network getModuleNetwork() {
 		// TODO Auto-generated method stub
 		return null;
 	}

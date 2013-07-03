@@ -2,39 +2,40 @@ package logic;
 
 import java.util.HashMap;
 
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.graph.DefaultEdge;
-
 public abstract class Modularizator {
+	
 	
 	private HashMap<String, Algorithm> algorithms = new HashMap<String, Algorithm>();
 	
-	private DirectedGraph<Module, DefaultEdge> graph;
+	private Network network;
+	
+	private int nSteps;
 	
 	
-	public Modularizator() {
-		this.graph = getModuleGraph();
+	public Modularizator(int nSteps) {
+		this.network = getModuleNetwork();
+		this.nSteps = nSteps;
 		
 		initAlgorithms();
 	}
 	
 	
-	public DirectedGraph<Module, DefaultEdge> getGraph() {
-		return graph;
+	public Network getNetwork() {
+		return network;
 	}
 	
 	/**
 	 * Scan the project, create and return the graph of modules
 	 * @return
 	 */
-	protected abstract DirectedGraph<Module, DefaultEdge> getModuleGraph();
+	protected abstract Network getModuleNetwork();
 	
 	
 	/**
 	 * Initialize all algorithm objects
 	 */
 	private void initAlgorithms() {
-		MarceloAlgorithm marceloAlg = new MarceloAlgorithm(graph);
+		MarceloAlgorithm marceloAlg = new MarceloAlgorithm(network, nSteps);
 		algorithms.put(marceloAlg.getName(), marceloAlg);
 		
 	}
