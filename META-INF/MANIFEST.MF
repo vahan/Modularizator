@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Modularizator
+Bundle-SymbolicName: Modularizator;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: modularizator.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ClassPath: .,
+ libs/jgraph.jar,
+ libs/jgrapht-jdk1.6.jar
