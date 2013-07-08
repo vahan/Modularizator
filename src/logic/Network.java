@@ -15,16 +15,27 @@ public class Network extends DefaultDirectedGraph<Vertex, DefaultEdge> {
 	private static final long serialVersionUID = 2143531432815293678L;
 	
 	
-	private ArrayList<ArrayList<Vertex>> clusters = new ArrayList<ArrayList<Vertex>>();
+	private ArrayList<ArrayList<Vertex>> clusters;
 	
 
 	public Network(Class<? extends DefaultEdge> edgeClass, ArrayList<ArrayList<Vertex>> clusters) {
 		super(edgeClass);
 		
 		this.clusters = clusters;
+		initVertices();
 	}
 	
 	
+	private void initVertices() {
+		for (ArrayList<Vertex> cluster : clusters) {
+			for (Vertex vertex : cluster) {
+				super.addVertex(vertex);
+			}
+		}
+		
+	}
+
+
 	public int clustersCount() {
 		return clusters.size();
 	}

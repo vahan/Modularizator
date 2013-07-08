@@ -4,7 +4,7 @@
    <extension point="org.eclipse.ui.popupMenus"> 
       <objectContribution 
             id="modularization.popup.object"
-            objectClass="org.eclipse.core.resources.IResource">
+            objectClass="java.lang.Object">
       <menu
             label="Modularizator"
             id="Modularizator.menu1">

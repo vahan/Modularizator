@@ -12,8 +12,8 @@ public abstract class Modularizator {
 	private int nSteps;
 	
 	
-	public Modularizator(int nSteps) {
-		this.network = getModuleNetwork();
+	public Modularizator(Network network, int nSteps) {
+		this.network = network;
 		this.nSteps = nSteps;
 		
 		initAlgorithms();
@@ -24,11 +24,6 @@ public abstract class Modularizator {
 		return network;
 	}
 	
-	/**
-	 * Scan the project, create and return the graph of modules
-	 * @return
-	 */
-	protected abstract Network getModuleNetwork();
 	
 	
 	/**

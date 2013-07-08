@@ -5,14 +5,8 @@ public class PackageModularizator extends Modularizator {
 
 	
 	
-	public PackageModularizator(int nSteps) {
-		super(nSteps);
-	}
-
-	@Override
-	protected Network getModuleNetwork() {
-		// TODO Auto-generated method stub
-		return null;
+	public PackageModularizator(Network network, int nSteps) {
+		super(network, nSteps);
 	}
 
 }
