@@ -15,13 +15,9 @@ public class MarceloAlgorithm extends Algorithm {
 	@Override
 	public Network optimize(Scorer scorer) {
 		HashMap<Vertex, Integer> moduleAssignments = new HashMap<Vertex, Integer>();
-		int my_V = 0;
+		int my_V = 0; //TODO: who's this?
 		int NClusters;
-		int nModules = network.vertexSet().size();
-		if (nModules > 0)
-			NClusters = nModules;
-		else
-			NClusters = network.clustersCount();
+		NClusters = network.clustersCount();
 		for (Vertex v : network.vertexSet()) {
 			moduleAssignments.put(v, my_V++ % NClusters);
 		}
@@ -59,8 +55,7 @@ public class MarceloAlgorithm extends Algorithm {
 
 		//TODO who the hell is 'c'?
 		double c = 0;
-		for (int i = 0; i < changedNetwork.clustersCount(); i++)
-		{
+		for (int i = 0; i < changedNetwork.clustersCount(); i++) {
 			moduleProbs.put(i, Math.exp((double) moduleDependencies.get(i) / T - gamma));
 			c += Math.exp((double) moduleDependencies.get(i) / T - gamma);
 		}
@@ -70,14 +65,13 @@ public class MarceloAlgorithm extends Algorithm {
 		int oldpos = 0;
 		double acc = moduleProbs.get(0);
 		
-		while (acc < rand)
-		{
+		while (acc < rand) {
 			pos++;
 			acc += moduleProbs.get(pos);			
 		}
 		
 		oldpos = moduleAssignments.get(rndVertex); 
-		moduleAssignments.put(rndVertex, pos);	
+		moduleAssignments.put(rndVertex, pos);
 
 		if (pos != oldpos)
 			changedNetwork.changeClusterAssignment(rndVertex, oldpos, pos);
