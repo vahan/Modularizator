@@ -14,11 +14,11 @@ public class MarceloAlgorithm extends Algorithm {
 
 	@Override
 	public Network optimize(Scorer scorer) {
-		HashMap<Vertex, Integer> moduleAssignments = new HashMap<Vertex, Integer>();
+		HashMap<Object, Integer> moduleAssignments = new HashMap<Object, Integer>();
 		int my_V = 0; //TODO: who's this?
 		int NClusters;
 		NClusters = network.clustersCount();
-		for (Vertex v : network.vertexSet()) {
+		for (Object v : network.vertexSet()) {
 			moduleAssignments.put(v, my_V++ % NClusters);
 		}
 		
@@ -32,14 +32,14 @@ public class MarceloAlgorithm extends Algorithm {
 		return null;
 	}
 
-	protected Network change(Network changedNetwork, HashMap<Vertex, Integer> moduleAssignments) {
-		Vertex rndVertex = network.getRandomVertex(rnd);
+	protected Network change(Network changedNetwork, HashMap<Object, Integer> moduleAssignments) {
+		Object rndVertex = network.getRandomVertex(rnd);
 		
 		// Count the number of dependencies to the same module as well as to other modules
 		HashMap<Integer, Integer> moduleDependencies = new HashMap<Integer, Integer>();
 		for (int i = 0; i < network.clustersCount(); i++)
 			moduleDependencies.put(i, 0);
-		for (Vertex v : Graphs.neighborListOf(network, rndVertex)) {
+		for (Object v : Graphs.neighborListOf(network, rndVertex)) {
 			int moduleAss = moduleAssignments.get(v);
 			moduleDependencies.put(moduleAss, moduleDependencies.get(v) + 1);
 		}

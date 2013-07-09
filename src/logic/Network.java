@@ -7,7 +7,7 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
-public class Network extends DefaultDirectedGraph<Vertex, DefaultEdge> {
+public class Network extends DefaultDirectedGraph<Object, DefaultEdge> {
 
 	/**
 	 * 
@@ -15,10 +15,10 @@ public class Network extends DefaultDirectedGraph<Vertex, DefaultEdge> {
 	private static final long serialVersionUID = 2143531432815293678L;
 	
 	
-	private ArrayList<ArrayList<Vertex>> clusters;
+	private ArrayList<ArrayList<Object>> clusters;
 	
 
-	public Network(Class<? extends DefaultEdge> edgeClass, ArrayList<ArrayList<Vertex>> clusters) {
+	public Network(Class<? extends DefaultEdge> edgeClass, ArrayList<ArrayList<Object>> clusters) {
 		super(edgeClass);
 		
 		this.clusters = clusters;
@@ -27,8 +27,8 @@ public class Network extends DefaultDirectedGraph<Vertex, DefaultEdge> {
 	
 	
 	private void initVertices() {
-		for (ArrayList<Vertex> cluster : clusters) {
-			for (Vertex vertex : cluster) {
+		for (ArrayList<Object> cluster : clusters) {
+			for (Object vertex : cluster) {
 				super.addVertex(vertex);
 			}
 		}
@@ -41,29 +41,29 @@ public class Network extends DefaultDirectedGraph<Vertex, DefaultEdge> {
 	}
 	
 	
-	public void addCluster(ArrayList<Vertex> cluster) {
+	public void addCluster(ArrayList<Object> cluster) {
 		clusters.add(cluster);
 	}
 	
 	
-	public Vertex getRandomVertex(Random rnd) {
-		Set<Vertex> vertexSet = this.vertexSet();
-		Vertex[] verteces = vertexSet.toArray(new Vertex[vertexSet.size()]);
+	public Object getRandomVertex(Random rnd) {
+		Set<Object> vertexSet = this.vertexSet();
+		Object[] verteces = vertexSet.toArray(new Object[vertexSet.size()]);
 		int rndIndex = rnd.nextInt(verteces.length);
 		
 		return verteces[rndIndex];
 	}
 
 	/**
-	 * Move the vertex from a cluster into a new one
-	 * @param vertex			Vertex to move
-	 * @param oldClusterInd		The index of the cluster where the vertex belongs before moving
-	 * @param newClusterInd		The index of the cluster where the vertex will be moved
+	 * Move the Object from a cluster into a new one
+	 * @param vertex			Object to move
+	 * @param oldClusterInd		The index of the cluster where the Object belongs before moving
+	 * @param newClusterInd		The index of the cluster where the Object will be moved
 	 */
-	public void changeClusterAssignment(Vertex vertex, int oldClusterInd, int newClusterInd) {
-		ArrayList<Vertex> newCluster = clusters.get(newClusterInd);
+	public void changeClusterAssignment(Object vertex, int oldClusterInd, int newClusterInd) {
+		ArrayList<Object> newCluster = clusters.get(newClusterInd);
 		newCluster.add(vertex);
-		ArrayList<Vertex> oldCluster = clusters.get(oldClusterInd);
+		ArrayList<Object> oldCluster = clusters.get(oldClusterInd);
 		oldCluster.remove(vertex);
 		
 	}
