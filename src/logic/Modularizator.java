@@ -16,8 +16,6 @@ public class Modularizator {
 
 	private Network network;
 
-	private Network optimizedNetwork;
-
 	private static Modularizator instance;
 
 	private Modularizator() {
@@ -34,14 +32,6 @@ public class Modularizator {
 		return algorithm;
 	}
 
-	public Network getOptimizedNetwork() {
-		return optimizedNetwork;
-	}
-
-	public void setOptimizedNetwork(Network optimizedNetwork) {
-		this.optimizedNetwork = optimizedNetwork;
-	}
-
 	public Network getNetwork() {
 		return network;
 	}
@@ -53,9 +43,8 @@ public class Modularizator {
 		algorithm = new MarceloAlgorithm(network, nSteps);
 	}
 
-	public HashMap<ICompilationUnit, IPackageFragment> getChanges() {
-		// TODO Auto-generated method stub
-		return null;
+	public HashMap<Object, Cluster> getChanges() {
+		return algorithm.getChanges();
 	}
 
 }

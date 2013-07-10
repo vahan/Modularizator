@@ -1,6 +1,7 @@
 package modularizator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import logic.Cluster;
 import logic.Network;
@@ -32,7 +33,7 @@ public class NetworkReader {
 	}
 
 	private void readClusters() {
-		network = new Network(DefaultEdge.class, new ArrayList<Cluster>());
+		network = new Network(DefaultEdge.class, new HashMap<Object, Cluster>());
 		try {
 			IPackageFragment[] packageFragments = javaProject
 					.getPackageFragments();
@@ -40,8 +41,7 @@ public class NetworkReader {
 				if (packageFrg.getKind() != IPackageFragmentRoot.K_SOURCE)
 					continue;
 				ICompilationUnit[] compUnits = packageFrg.getCompilationUnits();
-				Cluster cluster = readCluster(compUnits, packageFrg);
-				network.addCluster(cluster);
+				readCluster(compUnits, packageFrg);
 			}
 		} catch (JavaModelException e) {
 			// TODO Auto-generated catch block
@@ -50,15 +50,13 @@ public class NetworkReader {
 		}
 	}
 
-	private Cluster readCluster(ICompilationUnit[] compUnits, IPackageFragment packageFrg)
+	private void readCluster(ICompilationUnit[] compUnits, IPackageFragment packageFrg)
 			throws JavaModelException {
-		ArrayList<Object> cluster = new ArrayList<Object>();
+		ArrayList<Object> verteces = new ArrayList<Object>();
 		for (ICompilationUnit compUnit : compUnits) {
 			addEdges(compUnit);
-			cluster.add(compUnit);
+			network.add(compUnit, packageFrg);
 		}
-
-		return new Cluster(cluster, packageFrg);
 	}
 
 	private void addEdges(ICompilationUnit source) throws JavaModelException {
@@ -74,8 +72,9 @@ public class NetworkReader {
 				continue;
 			}
 			IType iType = javaProject.findType(elemName);
-			org.eclipse.jdt.core.ICompilationUnit target = iType
-					.getCompilationUnit();
+			if (iType == null)
+				continue; //TODO: sometimes it gets nulls, but should it??
+			org.eclipse.jdt.core.ICompilationUnit target = iType.getCompilationUnit();
 
 			network.addVertex(target); // The vertex must be in the graph before
 										// its edge can be added

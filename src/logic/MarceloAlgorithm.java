@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.jgrapht.Graphs;
 
@@ -12,12 +13,7 @@ public class MarceloAlgorithm extends Algorithm {
 
 	@Override
 	public Network optimize(Scorer scorer) {
-		HashMap<Object, Integer> moduleAssignments = new HashMap<Object, Integer>();
-		int label = 0;
-		int NClusters = network.clustersCount();
-		for (Object v : network.vertexSet()) {
-			moduleAssignments.put(v, label++ % NClusters);
-		}
+		HashMap<Object, Cluster> moduleAssignments = network.getClusters();
 
 		int time = 0;
 		Network changedNetwork = (Network) network.clone();
@@ -30,46 +26,46 @@ public class MarceloAlgorithm extends Algorithm {
 	}
 
 	protected Network change(Network changedNetwork,
-			HashMap<Object, Integer> moduleAssignments) {
+			HashMap<Object, Cluster> moduleAssignments) {
 		Object rndVertex = changedNetwork.getRandomVertex(rnd);
-
 		// Count the number of dependencies to the same module as well as to other modules
-		HashMap<Integer, Integer> moduleDependencies = new HashMap<Integer, Integer>();
-		for (int i = 0; i < changedNetwork.clustersCount(); i++)
-			moduleDependencies.put(i, 0);
+		HashMap<Cluster, Integer> moduleDependencies = new HashMap<Cluster, Integer>();
+		for (Cluster cluster : changedNetwork.getClusters().values())
+			moduleDependencies.put(cluster, 0);
 		for (Object v : Graphs.neighborListOf(changedNetwork, rndVertex)) {
-			int moduleAss = moduleAssignments.get(v);
+			Cluster moduleAss = moduleAssignments.get(v);
 			moduleDependencies.put(moduleAss, moduleDependencies.get(v) + 1);
 		}
-
-		HashMap<Integer, Double> moduleProbs = new HashMap<Integer, Double>();
-
+		HashMap<Cluster, Double> moduleProbs = new HashMap<Cluster, Double>();
 		// Find maximum count
 		int nmax = -Integer.MAX_VALUE;
-		for (int i = 0; i < changedNetwork.clustersCount(); i++)
-			if (nmax < moduleDependencies.get(i))
-				nmax = moduleDependencies.get(i);
+		for (Cluster cluster : changedNetwork.getClusters().values())
+			if (nmax < moduleDependencies.get(cluster))
+				nmax = moduleDependencies.get(cluster);
 		double gamma = (double) nmax / T;
 
 		double sum = 0;
-		for (int i = 0; i < changedNetwork.clustersCount(); i++) {
-			double exp = Math.exp((double) moduleDependencies.get(i) / T - gamma);
-			moduleProbs.put(i, exp);
+		for (Cluster cluster : changedNetwork.getClusters().values()) {
+			double exp = Math.exp((double) moduleDependencies.get(cluster) / T - gamma);
+			moduleProbs.put(cluster, exp);
 			sum += exp;
 		}
-
 		double rand = rnd.nextDouble() * sum;
 		double acc = 0;
-		int pos = -1;
+		Iterator<Cluster> it = network.getClusters().values().iterator();
+		Cluster pos = null;
 		while (acc < rand) {
-			acc += moduleProbs.get(++pos);
+			pos = it.next();
+			acc += moduleProbs.get(pos);
 		}
 
-		int oldpos = moduleAssignments.get(rndVertex);
+		Cluster oldpos = moduleAssignments.get(rndVertex);
 		moduleAssignments.put(rndVertex, pos);
 
-		if (pos != oldpos)
-			changedNetwork.changeClusterAssignment(rndVertex, oldpos, pos);
+		if (!pos.equals(oldpos)) {
+			changedNetwork.changeClusterAssignment(rndVertex, pos);
+			changes.put(rndVertex, pos);
+		}
 
 		return changedNetwork;
 	}

@@ -3,6 +3,7 @@ package modularizator.actions;
 import java.util.HashMap;
 
 import logic.Algorithm;
+import logic.Cluster;
 import logic.Modularizator;
 import logic.Network;
 import logic.Scorer;
@@ -17,6 +18,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.jdt.internal.corext.refactoring.nls.KeyValuePair;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -68,16 +70,8 @@ public class PackageModularizeAction implements IObjectActionDelegate {
 		modularizator.initAlgorithms(network, nSteps);
 		algorithm = modularizator.getAlgorithm();
 
-		MessageDialog.openInformation(shell, "Package Modularizator Tips",
-				"run: javaProject = " + javaProject.getElementName());
-
 		Network optimizedNetwork = algorithm.optimize(scorer);
-		modularizator.setOptimizedNetwork(optimizedNetwork);
-
 		showSuggestions(modularizator.getChanges());
-
-		MessageDialog.openInformation(shell, "Package Modularizator Tips",
-				"See individual files for tips");
 	}
 
 	/**
@@ -101,15 +95,18 @@ public class PackageModularizeAction implements IObjectActionDelegate {
 		IWorkspace workspace = ResourcesPlugin.getWorkspace();
 		IWorkspaceRoot workspaceRoot = workspace.getRoot();
 		selectedProject = workspaceRoot.getProject(projectName);
-
-		MessageDialog.openInformation(shell, "Package Modularizator Tips",
-				"selectionChanged selection: " + selectedProject.getName());
 	}
 
-	private void showSuggestions(HashMap<ICompilationUnit, IPackageFragment> changes) {
+	private void showSuggestions(HashMap<Object, Cluster> changes) {
 		MessageDialog.openInformation(shell.getShell(), "TODO",
 				"show the graph tips on individual project files");
 		// TODO: show the graph tips on individual project files
+		
+		for (Object vertex : changes.keySet()) {
+			ICompilationUnit compUnit = (ICompilationUnit) vertex;
+			Cluster cluster = changes.get(vertex);
+			System.out.println("Move class '" + compUnit.getElementName() + "' to " + cluster.getModel().getElementName());
+		}
 	}
 
 	@Override
