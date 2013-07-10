@@ -1,6 +1,5 @@
 package modularizator;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import logic.Cluster;
@@ -19,7 +18,7 @@ public class NetworkReader {
 
 	private final IJavaProject javaProject;
 
-	private Network network = null;
+	private Network network = new Network(DefaultEdge.class, new HashMap<Object, Cluster>());
 
 	public NetworkReader(IJavaProject javaProject) {
 		this.javaProject = javaProject;
@@ -27,13 +26,10 @@ public class NetworkReader {
 
 	public Network read() {
 		readClusters();
-
 		return network;
-
 	}
 
 	private void readClusters() {
-		network = new Network(DefaultEdge.class, new HashMap<Object, Cluster>());
 		try {
 			IPackageFragment[] packageFragments = javaProject
 					.getPackageFragments();
@@ -52,7 +48,6 @@ public class NetworkReader {
 
 	private void readCluster(ICompilationUnit[] compUnits, IPackageFragment packageFrg)
 			throws JavaModelException {
-		ArrayList<Object> verteces = new ArrayList<Object>();
 		for (ICompilationUnit compUnit : compUnits) {
 			addEdges(compUnit);
 			network.add(compUnit, packageFrg);
@@ -67,7 +62,7 @@ public class NetworkReader {
 				continue;
 			String elemName = impDec.getElementName();
 			String className = elemName.substring(elemName.lastIndexOf("."));
-			if (className == "*") {
+			if (className.equals("*")) {
 				// TODO: Deal with the * imports
 				continue;
 			}

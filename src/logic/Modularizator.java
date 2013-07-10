@@ -2,8 +2,6 @@ package logic;
 
 import java.util.HashMap;
 
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IPackageFragment;
 
 /**
  * Singleton class
@@ -13,8 +11,6 @@ import org.eclipse.jdt.core.IPackageFragment;
  */
 public class Modularizator {
 	private Algorithm algorithm;
-
-	private Network network;
 
 	private static Modularizator instance;
 
@@ -30,10 +26,6 @@ public class Modularizator {
 
 	public Algorithm getAlgorithm() {
 		return algorithm;
-	}
-
-	public Network getNetwork() {
-		return network;
 	}
 
 	/**

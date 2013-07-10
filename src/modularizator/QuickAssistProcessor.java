@@ -14,8 +14,7 @@ public class QuickAssistProcessor implements IQuickAssistProcessor {
 	public boolean hasAssists(IInvocationContext context) throws CoreException {
 		Modularizator modularizator = Modularizator.getInstance();
 		
-		// TODO Auto-generated method stub
-		return false;
+		return modularizator.getChanges().size() > 0;
 	}
 
 	@Override
