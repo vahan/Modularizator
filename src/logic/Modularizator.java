@@ -2,37 +2,60 @@ package logic;
 
 import java.util.HashMap;
 
-public abstract class Modularizator {
-	
-	
-	private HashMap<String, Algorithm> algorithms = new HashMap<String, Algorithm>();
-	
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IPackageFragment;
+
+/**
+ * Singleton class
+ * 
+ * @author vahan
+ * 
+ */
+public class Modularizator {
+	private Algorithm algorithm;
+
 	private Network network;
-	
-	private int nSteps;
-	
-	
-	public Modularizator(Network network, int nSteps) {
-		this.network = network;
-		this.nSteps = nSteps;
-		
-		initAlgorithms();
+
+	private Network optimizedNetwork;
+
+	private static Modularizator instance;
+
+	private Modularizator() {
+
 	}
-	
-	
+
+	public static Modularizator getInstance() {
+		if (instance == null)
+			instance = new Modularizator();
+		return instance;
+	}
+
+	public Algorithm getAlgorithm() {
+		return algorithm;
+	}
+
+	public Network getOptimizedNetwork() {
+		return optimizedNetwork;
+	}
+
+	public void setOptimizedNetwork(Network optimizedNetwork) {
+		this.optimizedNetwork = optimizedNetwork;
+	}
+
 	public Network getNetwork() {
 		return network;
 	}
-	
-	
-	
+
 	/**
 	 * Initialize all algorithm objects
 	 */
-	private void initAlgorithms() {
-		MarceloAlgorithm marceloAlg = new MarceloAlgorithm(network, nSteps);
-		algorithms.put(marceloAlg.getName(), marceloAlg);
-		
+	public void initAlgorithms(Network network, int nSteps) {
+		algorithm = new MarceloAlgorithm(network, nSteps);
 	}
-	
+
+	public HashMap<ICompilationUnit, IPackageFragment> getChanges() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

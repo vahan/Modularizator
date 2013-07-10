@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension point="org.eclipse.ui.popupMenus"> 
-      <objectContribution 
+   <extension point="org.eclipse.ui.popupMenus">
+      <objectContribution
             id="modularization.popup.object"
             objectClass="java.lang.Object">
       <menu
@@ -13,7 +13,7 @@
          </separator>
       </menu>
       <action
-            id="modularization.object.action1" 
+            id="modularization.object.action1"
             label="Modularize"
             icon="icons/sample.gif"
             class="modularizator.actions.PackageModularizeAction"
@@ -21,6 +21,14 @@
       </action> 
    </objectContribution> 
 </extension>
+   <extension
+         point="org.eclipse.jdt.ui.quickAssistProcessors">
+      <quickAssistProcessor
+            class="modularizator.QuickAssistProcessor"
+            id="Modularizator.quickAssistProcessor1"
+            name="%modularizatorQuickAssistProcessor">
+      </quickAssistProcessor>
+   </extension>
 
    <!--<extension
          point="org.eclipse.ui.actionSets">
