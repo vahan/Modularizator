@@ -1,57 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="modularization.popup.object"
-            objectClass="java.lang.Object">
-      <menu
-            label="Modularizator"
-            id="Modularizator.menu1">
-         <separator
-               name="group1">
-         </separator>
-      </menu>
-      <action
-            id="modularization.object.action1"
-            label="Modularize"
-            icon="icons/sample.gif"
-            class="modularizator.actions.PackageModularizeAction"
-            menubarPath="Modularizator.menu1/group1">
-      </action> 
-   </objectContribution> 
-</extension>
-   <extension
-         point="org.eclipse.jdt.ui.quickAssistProcessors">
-      <quickAssistProcessor
-            class="modularizator.QuickAssistProcessor"
-            id="Modularizator.quickAssistProcessor1"
-            name="%modularizatorQuickAssistProcessor">
-      </quickAssistProcessor>
-   </extension>
-
-   <!--<extension
-         point="org.eclipse.ui.actionSets">
-      <actionSet
-            id="modularizator.actionSet"
-            label="Sample Action Set"
-            visible="true">
-         <menu
-               id="modularizatorMenu"
-               label="Modularizator &amp;Menu">
-            <separator
-                  name="modularizatorGroup">
-            </separator>
-         </menu>
-         <action
-               id="modularizator.actions.PackageModularizeAction"
-               class="modularizator.actions.PackageModularizeAction"
-               icon="icons/sample.gif"
-               label="&amp;Modularize"
-               menubarPath="modularizatorMenu/modularizatorMenu"
-               toolbarPath="sampleGroup"
-               tooltip="Give tips on modularization">
-         </action>
-      </actionSet>
-   </extension>-->
+	<extension id="modularizator.markers.problem" point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.core.resources.problemmarker"/>
+		<persistent value="true"/>
+	</extension>
+	<extension point="org.eclipse.ui.popupMenus">
+		<objectContribution
+				id="modularizator.popup.object"
+				objectClass="java.lang.Object">
+			<menu
+				label="Modularizator"
+				id="modularizator.menu1">
+				<separator
+						name="group1">
+				</separator>
+			</menu>
+			<action
+					id="modularizator.object.action1"
+					label="Modularize"
+					icon="icons/modularize.gif"
+					class="modularizator.actions.ModularizeAction"
+					menubarPath="modularizator.menu1/group1">
+			</action>
+			<action
+					id="modularizator.object.action1"
+					label="Clear Markers"
+					icon="icons/clear.gif"
+					class="modularizator.actions.ClearAction"
+					menubarPath="modularizator.menu1/group1">
+			</action>
+		</objectContribution>
+	</extension>
 </plugin>
