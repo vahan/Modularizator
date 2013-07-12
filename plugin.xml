@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-	<extension id="modularizator.markers.problem" point="org.eclipse.core.resources.markers">
-		<super type="org.eclipse.core.resources.problemmarker"/>
-		<persistent value="true"/>
-	</extension>
 	<extension point="org.eclipse.ui.popupMenus">
 		<objectContribution
 				id="modularizator.popup.object"
@@ -32,4 +28,16 @@
 			</action>
 		</objectContribution>
 	</extension>
+	<extension id="modularizator.markers.problem" point="org.eclipse.core.resources.markers">
+		<super type="org.eclipse.core.resources.problemmarker"/>
+		<persistent value="true"/>
+		<attribute name="newsource"/>
+	</extension>
+ <extension
+       point="org.eclipse.ui.ide.markerResolution">
+    <markerResolutionGenerator
+          class="modularizator.quickfix.QuickFixer"
+          markerType="modularizator.markers.problem">
+    </markerResolutionGenerator>
+ </extension>
 </plugin>

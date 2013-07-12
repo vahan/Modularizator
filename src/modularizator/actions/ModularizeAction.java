@@ -7,6 +7,7 @@ import logic.Cluster;
 import logic.Network;
 import logic.Scorer;
 import modularizator.NetworkReader;
+import modularizator.quickfix.QuickFix;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
@@ -53,17 +54,20 @@ public class ModularizeAction extends BaseAction {
 	}
 
 	private void showSuggestions(HashMap<Object, Cluster> changes) {
+		removeAllMarkers();
 		for (Object vertex : changes.keySet()) {
 			ICompilationUnit compUnit = (ICompilationUnit) vertex;
 			Cluster cluster = changes.get(vertex);
 			int line = 1; //TODO put the actual package declaration line
-			String message = "Move to package " + cluster.getModel().getElementName();
+			String newSourceName = cluster.getModel().getElementName();
+			String message = "Move to package " + newSourceName;
 			try {
 				IMarker marker = compUnit.getResource().createMarker(MARKER_NAME);
 				marker.setAttribute(IMarker.LINE_NUMBER, line);
 				marker.setAttribute(IMarker.MESSAGE, message);
 				marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
+				marker.setAttribute(QuickFix.ATTRIBUTE_NEWSOURCE, newSourceName);
 				System.out.println(marker.exists());
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block

@@ -31,8 +31,7 @@ public class NetworkReader {
 
 	private void readClusters() {
 		try {
-			IPackageFragment[] packageFragments = javaProject
-					.getPackageFragments();
+			IPackageFragment[] packageFragments = javaProject.getPackageFragments();
 			for (IPackageFragment packageFrg : packageFragments) {
 				if (packageFrg.getKind() != IPackageFragmentRoot.K_SOURCE)
 					continue;
