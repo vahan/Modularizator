@@ -1,6 +1,8 @@
 package modularizator.actions;
 
 import logic.Modularizator;
+import logic.Network;
+import modularizator.NetworkReader;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -10,6 +12,8 @@ import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -57,6 +61,12 @@ public abstract class BaseAction implements IObjectActionDelegate {
 
 	}
 	
+	protected Network readNetwork() {
+		IJavaProject javaProject = JavaCore.create(selectedProject);
+		NetworkReader reader = new NetworkReader(javaProject);
+		Network network = reader.read();
+		return network;
+	}
 	
 	protected void removeAllMarkers() {
 		IWorkspaceRoot root = selectedProject.getWorkspace().getRoot();

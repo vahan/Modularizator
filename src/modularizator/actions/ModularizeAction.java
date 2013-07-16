@@ -6,14 +6,11 @@ import logic.Algorithm;
 import logic.Cluster;
 import logic.Network;
 import logic.Scorer;
-import modularizator.NetworkReader;
 import modularizator.quickfix.QuickFix;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IJavaProject;
-import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.action.IAction;
 
 /**
@@ -42,11 +39,8 @@ public class ModularizeAction extends BaseAction {
 	 */
 	@Override
 	public void run(IAction action) {
-		IJavaProject javaProject = JavaCore.create(selectedProject);
-		NetworkReader reader = new NetworkReader(javaProject);
-		Network network = reader.read();
-
-		modularizator.initAlgorithms(network, nSteps);
+		Network network = readNetwork();
+		modularizator.initAlgorithm(network, nSteps);
 		algorithm = modularizator.getAlgorithm();
 
 		Network optimizedNetwork = algorithm.optimize(scorer);

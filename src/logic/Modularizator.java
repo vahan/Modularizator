@@ -11,6 +11,7 @@ import java.util.HashMap;
  */
 public class Modularizator {
 	private Algorithm algorithm;
+	private Scorer scorer;
 
 	private static Modularizator instance;
 
@@ -27,12 +28,20 @@ public class Modularizator {
 	public Algorithm getAlgorithm() {
 		return algorithm;
 	}
+	
+	public Scorer getScorer() {
+		return scorer;
+	}
 
 	/**
 	 * Initialize all algorithm objects
 	 */
-	public void initAlgorithms(Network network, int nSteps) {
+	public void initAlgorithm(Network network, int nSteps) {
 		algorithm = new MarceloAlgorithm(network, nSteps);
+	}
+	
+	public void initScorer(Network network) {
+		scorer = new MarceloScorer(network);
 	}
 
 	public HashMap<Object, Cluster> getChanges() {

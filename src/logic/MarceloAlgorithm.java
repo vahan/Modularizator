@@ -34,7 +34,7 @@ public class MarceloAlgorithm extends Algorithm {
 			moduleDependencies.put(cluster, 0);
 		for (Object v : Graphs.neighborListOf(changedNetwork, rndVertex)) {
 			Cluster moduleAss = moduleAssignments.get(v);
-			moduleDependencies.put(moduleAss, moduleDependencies.get(v) + 1);
+			moduleDependencies.put(moduleAss, moduleDependencies.get(moduleAss) + 1);
 		}
 		HashMap<Cluster, Double> moduleProbs = new HashMap<Cluster, Double>();
 		// Find maximum count

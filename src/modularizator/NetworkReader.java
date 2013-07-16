@@ -57,12 +57,10 @@ public class NetworkReader {
 		network.addVertex(source);
 		IImportDeclaration[] imports = source.getImports();
 		for (IImportDeclaration impDec : imports) {
-			if (!impDec.isOnDemand())
-				continue;
 			String elemName = impDec.getElementName();
 			String className = elemName.substring(elemName.lastIndexOf("."));
 			if (className.equals("*")) {
-				// TODO: Deal with the * imports
+				// TODO: Deal with the * imports; impDec.isOndemand()
 				continue;
 			}
 			IType iType = javaProject.findType(elemName);

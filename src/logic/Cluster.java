@@ -1,16 +1,41 @@
 package logic;
 
 
+import java.util.HashMap;
+
 import org.eclipse.jdt.core.IJavaElement;
 
 public class Cluster {
 	
+	private static int counter = 0;
+	
+	private static HashMap<Integer, Cluster> clusters = new HashMap<Integer, Cluster>();
+	
+	private final int id;
+	
 	private final IJavaElement sourceElement;
 
 	public Cluster(IJavaElement elem) {
-		super();
+		id = counter;
 		this.sourceElement = elem;
+		clusters.put(id, this);
+		counter++;
 	}
+	
+	
+	public static Cluster getCluster(int id) {
+		return clusters.get(id);
+	}
+	
+	public static int getClustersCount() {
+		return counter;
+	}
+	
+	public int getId() {
+		return id;
+	}
+	
+	
 
 	public IJavaElement getModel() {
 		return sourceElement;

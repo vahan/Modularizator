@@ -13,17 +13,24 @@
 				</separator>
 			</menu>
 			<action
-					id="modularizator.object.action1"
+					id="modularizator.object.modularize"
 					label="Modularize"
 					icon="icons/modularize.gif"
 					class="modularizator.actions.ModularizeAction"
 					menubarPath="modularizator.menu1/group1">
 			</action>
 			<action
-					id="modularizator.object.action1"
+					id="modularizator.object.clear"
 					label="Clear Markers"
 					icon="icons/clear.gif"
 					class="modularizator.actions.ClearAction"
+					menubarPath="modularizator.menu1/group1">
+			</action>
+			<action
+					id="modularizator.object.score"
+					label="Score"
+					icon="icons/score.gif"
+					class="modularizator.actions.ScoreAction"
 					menubarPath="modularizator.menu1/group1">
 			</action>
 		</objectContribution>

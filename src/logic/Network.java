@@ -17,7 +17,7 @@ public class Network extends DefaultDirectedGraph<Object, DefaultEdge> {
 	private static final long serialVersionUID = 2143531432815293678L;
 
 	private HashMap<Object, Cluster> clusters;
-
+	
 	public Network(Class<? extends DefaultEdge> edgeClass, HashMap<Object, Cluster> clusters) {
 		super(edgeClass);
 		this.clusters = clusters;
@@ -26,12 +26,6 @@ public class Network extends DefaultDirectedGraph<Object, DefaultEdge> {
 	
 	public HashMap<Object, Cluster> getClusters() {
 		return clusters;
-	}
-
-	private void initVertices() {
-		for (Object vertex : clusters.keySet()) {
-			super.addVertex(vertex);
-		}
 	}
 	
 	public Cluster getCluster(Object vertex) {
@@ -70,11 +64,17 @@ public class Network extends DefaultDirectedGraph<Object, DefaultEdge> {
 	}
 
 	public void add(ICompilationUnit compUnit, IJavaElement elem) {
-		// TODO Auto-generated method stub
 		Cluster cluster = clusters.get(compUnit);
 		if (cluster == null)
 			cluster = new Cluster(elem);
 		clusters.put(compUnit, cluster);
+	}
+
+	private void initVertices() {
+		for (Object vertex : clusters.keySet()) {
+			super.addVertex(vertex);
+		}
+		
 	}
 
 }
