@@ -66,10 +66,10 @@ public class NetworkReader {
 			IType iType = javaProject.findType(elemName);
 			if (iType == null)
 				continue; //TODO: sometimes it gets nulls, but should it??
-			org.eclipse.jdt.core.ICompilationUnit target = iType.getCompilationUnit();
-
-			network.addVertex(target); // The vertex must be in the graph before
-										// its edge can be added
+			ICompilationUnit target = iType.getCompilationUnit();
+			if (target == null)
+				continue;
+			network.addVertex(target); // The vertex must be in the graph before its edge can be added
 			network.addEdge(source, target);
 		}
 

@@ -5,7 +5,7 @@ import java.util.Random;
 
 public abstract class Algorithm {
 
-	public static final double T = 1.0/4; // TODO set the correct value!
+	public static final double T = 1.0/20; // TODO set the correct value!
 
 	protected final String name;
 
