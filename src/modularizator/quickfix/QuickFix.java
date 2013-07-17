@@ -16,11 +16,13 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IMethod;
+import org.eclipse.jdt.core.IPackageFragment;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.core.dom.AST;
@@ -38,8 +40,21 @@ import org.eclipse.jdt.core.search.SearchParticipant;
 import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.eclipse.jdt.internal.core.PackageFragment;
+import org.eclipse.jdt.internal.corext.refactoring.JavaRefactoringArguments;
+import org.eclipse.jdt.internal.corext.refactoring.RefactoringCoreMessages;
+import org.eclipse.jdt.internal.corext.refactoring.changes.DynamicValidationStateChange;
+import org.eclipse.jdt.internal.corext.refactoring.changes.MoveCompilationUnitChange;
 import org.eclipse.jdt.internal.corext.refactoring.rename.RenameMethodProcessor;
 import org.eclipse.jdt.internal.corext.refactoring.rename.RenameVirtualMethodProcessor;
+import org.eclipse.jdt.internal.corext.refactoring.reorg.JavaMoveProcessor;
+import org.eclipse.jdt.internal.corext.refactoring.reorg.MoveCuUpdateCreator;
+import org.eclipse.jdt.internal.corext.refactoring.reorg.ReorgPolicyFactory;
+import org.eclipse.jdt.internal.corext.refactoring.reorg.IReorgPolicy.IMovePolicy;
+import org.eclipse.jdt.internal.corext.refactoring.util.TextChangeManager;
+import org.eclipse.ltk.core.refactoring.Change;
+import org.eclipse.ltk.core.refactoring.CompositeChange;
+import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
+import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.internal.quickaccess.SearchField;
 
@@ -65,8 +80,44 @@ public class QuickFix implements IMarkerResolution {
 		IProject project = source.getProject();
 		IJavaElement javaElem = JavaCore.create(source);
 		ICompilationUnit compUnit = (ICompilationUnit) javaElem;
+		IProgressMonitor pm = new NullProgressMonitor();
 		
-		ASTParser parser = ASTParser.newParser(AST.JLS4);
+		try {
+			//TODO The following code is copied from org.eclipse.jdt.internal.corext.refactoring.reorg.ReorgPolicyFactory
+			CompositeChange composite= new DynamicValidationStateChange(RefactoringCoreMessages.ReorgPolicy_move);
+			MoveCuUpdateCreator creator= new MoveCuUpdateCreator(new ICompilationUnit[] {compUnit}, (IPackageFragment) newContainer);
+			TextChangeManager fChangeManager = creator.createChangeManager(new SubProgressMonitor(pm, 1), new RefactoringStatus());
+			composite.merge(new CompositeChange(RefactoringCoreMessages.MoveRefactoring_reorganize_elements, fChangeManager.getAllChanges()));
+			Change change = new MoveCompilationUnitChange(compUnit, (IPackageFragment) newContainer);
+			if (change instanceof CompositeChange) {
+				composite.merge(((CompositeChange) change));
+			} else {
+				composite.add(change);
+			}
+			composite.perform(pm);
+			
+		} catch (JavaModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (CoreException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		/*JavaRefactoringArguments arguments = new JavaRefactoringArguments(project, arguments);
+		RefactoringStatus status;
+		JavaMoveProcessor processor = new JavaMoveProcessor(arguments, status);
+		*/
+		
+		/*try {
+			compUnit.move(newContainer, null, null, false, new NullProgressMonitor());
+		} catch (JavaModelException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		/*ASTParser parser = ASTParser.newParser(AST.JLS4);
 		parser.setSource(compUnit);
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(new NullProgressMonitor());
 		cu.recordModifications();
@@ -95,7 +146,7 @@ public class QuickFix implements IMarkerResolution {
 		
 		cu.accept(visitor);
 		visitor.visit(cu.getPackage());
-		
+		*/
 		/*parser.
 		
 		try {
