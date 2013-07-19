@@ -3,6 +3,7 @@ package logic;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.jgrapht.Graphs;
 
 public class MarceloAlgorithm extends Algorithm {
@@ -13,7 +14,7 @@ public class MarceloAlgorithm extends Algorithm {
 
 	@Override
 	public Network optimize(Scorer scorer) {
-		HashMap<Object, Cluster> moduleAssignments = network.getClusters();
+		HashMap<ICompilationUnit, Cluster> moduleAssignments = network.getClusters();
 
 		int time = 0;
 		Network changedNetwork = (Network) network.clone();
@@ -26,8 +27,8 @@ public class MarceloAlgorithm extends Algorithm {
 	}
 
 	protected Network change(Network changedNetwork,
-			HashMap<Object, Cluster> moduleAssignments) {
-		Object rndVertex = changedNetwork.getRandomVertex(rnd);
+			HashMap<ICompilationUnit, Cluster> moduleAssignments) {
+		ICompilationUnit rndVertex = changedNetwork.getRandomVertex(rnd);
 		// Count the number of dependencies to the same module as well as to other modules
 		HashMap<Cluster, Integer> moduleDependencies = new HashMap<Cluster, Integer>();
 		for (Cluster cluster : changedNetwork.getClusters().values())

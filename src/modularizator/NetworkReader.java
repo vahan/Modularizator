@@ -18,7 +18,7 @@ public class NetworkReader {
 
 	private final IJavaProject javaProject;
 
-	private Network network = new Network(DefaultEdge.class, new HashMap<Object, Cluster>());
+	private Network network = new Network(DefaultEdge.class, new HashMap<ICompilationUnit, Cluster>());
 
 	public NetworkReader(IJavaProject javaProject) {
 		this.javaProject = javaProject;

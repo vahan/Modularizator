@@ -18,4 +18,5 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  libs/jgraph.jar,
  libs/jgrapht-jdk1.6.jar,
- libs/core-3.3.0-v_771.jar
+ libs/core-3.3.0-v_771.jar,
+ libs/jgraphx.jar

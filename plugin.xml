@@ -33,6 +33,13 @@
 					class="modularizator.actions.ScoreAction"
 					menubarPath="modularizator.menu1/group1">
 			</action>
+			<action
+					id="modularizator.object.visualize"
+					label="Visualize"
+					icon="icons/visualize.gif"
+					class="modularizator.actions.VisualizeAction"
+					menubarPath="modularizator.menu1/group1">
+			</action>
 		</objectContribution>
 	</extension>
 	<extension id="modularizator.markers.problem" point="org.eclipse.core.resources.markers">

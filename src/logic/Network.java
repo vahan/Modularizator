@@ -9,22 +9,22 @@ import org.eclipse.jdt.core.IJavaElement;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
-public class Network extends DefaultDirectedGraph<Object, DefaultEdge> {
+public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2143531432815293678L;
 
-	private HashMap<Object, Cluster> clusters;
+	private HashMap<ICompilationUnit, Cluster> clusters;
 	
-	public Network(Class<? extends DefaultEdge> edgeClass, HashMap<Object, Cluster> clusters) {
+	public Network(Class<? extends DefaultEdge> edgeClass, HashMap<ICompilationUnit, Cluster> clusters) {
 		super(edgeClass);
 		this.clusters = clusters;
 		initVertices();
 	}
 	
-	public HashMap<Object, Cluster> getClusters() {
+	public HashMap<ICompilationUnit, Cluster> getClusters() {
 		return clusters;
 	}
 	
@@ -36,13 +36,13 @@ public class Network extends DefaultDirectedGraph<Object, DefaultEdge> {
 		return clusters.size();
 	}
 
-	public void add(Object vertex, Cluster cluster) {
+	public void add(ICompilationUnit vertex, Cluster cluster) {
 		clusters.put(vertex, cluster);
 	}
 
-	public Object getRandomVertex(Random rnd) {
-		Set<Object> vertexSet = this.vertexSet();
-		Object[] verteces = vertexSet.toArray(new Object[vertexSet.size()]);
+	public ICompilationUnit getRandomVertex(Random rnd) {
+		Set<ICompilationUnit> vertexSet = this.vertexSet();
+		ICompilationUnit[] verteces = vertexSet.toArray(new ICompilationUnit[vertexSet.size()]);
 		int rndIndex = rnd.nextInt(verteces.length);
 
 		return verteces[rndIndex];
@@ -59,7 +59,7 @@ public class Network extends DefaultDirectedGraph<Object, DefaultEdge> {
 	 * @param newClusterInd
 	 *            The index of the cluster where the Object will be moved
 	 */
-	public void changeClusterAssignment(Object vertex, Cluster newCluster) {
+	public void changeClusterAssignment(ICompilationUnit vertex, Cluster newCluster) {
 		clusters.put(vertex, newCluster);
 	}
 
@@ -69,9 +69,22 @@ public class Network extends DefaultDirectedGraph<Object, DefaultEdge> {
 			cluster = new Cluster(elem);
 		clusters.put(compUnit, cluster);
 	}
+	
+	public DefaultDirectedGraph<ICompilationUnit, DefaultEdge> getGraph() {
+		DefaultDirectedGraph<ICompilationUnit, DefaultEdge> graph = new DefaultDirectedGraph<>(super.getEdgeFactory());
+		for (ICompilationUnit vertex : super.vertexSet()) {
+			graph.addVertex(vertex);
+		}
+		for (DefaultEdge edge : super.edgeSet()) {
+			ICompilationUnit source = super.getEdgeSource(edge);
+			ICompilationUnit target = super.getEdgeTarget(edge);
+			graph.addEdge(source, target);
+		}
+		return graph;
+	}
 
 	private void initVertices() {
-		for (Object vertex : clusters.keySet()) {
+		for (ICompilationUnit vertex : clusters.keySet()) {
 			super.addVertex(vertex);
 		}
 		
