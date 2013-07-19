@@ -2,7 +2,6 @@ package windows;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.swing.JFrame;
 
@@ -10,9 +9,14 @@ import logic.Cluster;
 import logic.Network;
 
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.jgrapht.graph.DefaultEdge;
 
+import com.mxgraph.layout.mxCircleLayout;
+import com.mxgraph.layout.mxCompactTreeLayout;
 import com.mxgraph.layout.mxGraphLayout;
+import com.mxgraph.layout.mxOrganicLayout;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
@@ -33,7 +37,7 @@ public class GraphWindow extends JFrame implements Runnable {
 	public GraphWindow(Network network) {
 		super("Visualized network of the classes");
 		this.network = network;
-		
+		setSize(1024, 780);
 	}
 	
 	
@@ -50,30 +54,50 @@ public class GraphWindow extends JFrame implements Runnable {
 	
 	private mxGraph construct() {
 		mxGraph graph = new mxGraph();
-		
-		HashMap<ICompilationUnit, Cluster> verticesInClusters = network.getClusters();
-		Set<ICompilationUnit> vertices = verticesInClusters.keySet();
 		HashMap<Cluster, Object> clusters = new HashMap<Cluster, Object>();
+		HashMap<ICompilationUnit, Object> vertices = new HashMap<ICompilationUnit, Object>();
 		Object root = graph.getDefaultParent();
 		
 		graph.getModel().beginUpdate();
-		for (Entry<ICompilationUnit, Cluster> entry : verticesInClusters.entrySet()) {
-			ICompilationUnit compUnit = entry.getKey();
-			Cluster cluster = entry.getValue();
-			Object parent = clusters.get(cluster);
-			if (parent == null) {
-				parent = graph.insertVertex(root, null, "", 0, 0, 0, 0);
-				clusters.put(cluster, parent);
+		for (DefaultEdge edge : network.edgeSet()) {
+			ICompilationUnit source = network.getEdgeSource(edge);
+			ICompilationUnit target = network.getEdgeTarget(edge);
+			Cluster sourceCluster = network.getCluster(source);
+			Cluster targetCluster = network.getCluster(target);
+			Object sourceParent = clusters.get(sourceCluster);
+			Object targetParent = clusters.get(targetCluster);
+			if (sourceParent == null) {
+				sourceParent = graph.insertVertex(root, null, "", 0, 0, 0, 0);
+				clusters.put(sourceCluster, sourceParent);
+			}
+			if (targetParent == null) {
+				targetParent = graph.insertVertex(root, null, "", 0, 0, 0, 0);
+				clusters.put(targetCluster, targetParent);
 			}
 			try {
-				Object v1 = graph.insertVertex(parent, null, compUnit.getElementName(), 0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
-				
+				Object v1 = vertices.get(source);
+				if (v1 == null) {
+					v1 = graph.insertVertex(sourceParent, null, source.getElementName(), 0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
+					graph.getModel().setCollapsed(v1, true);
+					vertices.put(source, v1);
+				}
+				Object v2 = vertices.get(target);
+				if (v2 == null) {
+					v2 = graph.insertVertex(targetParent, null, target.getElementName(), 0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
+					graph.getModel().setCollapsed(v2, true);
+					vertices.put(target, v2);
+				}
+				Object edgeParent = (sourceCluster.equals(targetCluster)) ? sourceParent : root;
+				Object e1 = graph.insertEdge(edgeParent, null, "", v1, v2);
 			} finally {
 				// Updates the display
 				graph.getModel().endUpdate();
 			}
 		}
 		mxGraphLayout layout = new mxHierarchicalLayout(graph);
+		/*for (Entry<Cluster, Object> entry : clusters.entrySet()) {
+			layout.execute(entry.getValue());
+		}*/
 		layout.execute(root);
 		
 		return graph;
