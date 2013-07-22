@@ -49,7 +49,6 @@ public class GraphWindow extends JFrame implements Runnable {
 		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		getContentPane().add(graphComponent);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
 		setVisible(true);
 	}

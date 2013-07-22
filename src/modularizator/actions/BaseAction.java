@@ -24,6 +24,8 @@ import org.eclipse.ui.IWorkbenchPart;
 public abstract class BaseAction implements IObjectActionDelegate {
 	
 	public final static String MARKER_NAME = "modularizator.markers.problem";
+	
+	public final static String MARKER_TYPE = "org.eclipse.core.resources.problemmarker";
 
 	protected IProject selectedProject;
 
@@ -77,4 +79,5 @@ public abstract class BaseAction implements IObjectActionDelegate {
 			e.printStackTrace();
 		}
 	}
+	
 }
