@@ -40,6 +40,13 @@
 					class="modularizator.actions.VisualizeAction"
 					menubarPath="modularizator.menu1/group1">
 			</action>
+			<action
+					id="modularizator.object.fixall"
+					label="Fix All"
+					icon="icons/fixall.gif"
+					class="modularizator.actions.FixAllAction"
+					menubarPath="modularizator.menu1/group1">
+			</action>
 		</objectContribution>
 	</extension>
 	<extension id="modularizator.markers.problem" point="org.eclipse.core.resources.markers">

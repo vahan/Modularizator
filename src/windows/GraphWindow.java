@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JFrame;
+import javax.swing.SwingConstants;
 
 import logic.Cluster;
 import logic.Network;
@@ -41,7 +42,6 @@ public class GraphWindow extends JFrame implements Runnable {
 		this.network = network;
 	}
 	
-	
 	@Override
 	public void run() {
 		mxGraph graph = construct();
@@ -49,10 +49,10 @@ public class GraphWindow extends JFrame implements Runnable {
 		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		getContentPane().add(graphComponent);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		pack();
 		setVisible(true);
 	}
-	
 	
 	private mxGraph construct() {
 		mxGraph graph = new mxGraph();
@@ -81,14 +81,14 @@ public class GraphWindow extends JFrame implements Runnable {
 				Object v1 = vertices.get(source);
 				if (v1 == null) {
 					v1 = graph.insertVertex(sourceParent, null, source.getElementName(), 
-							i * VERTEX_X, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
+							0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
 					graph.getModel().setCollapsed(v1, true);
 					vertices.put(source, v1);
 				}
 				Object v2 = vertices.get(target);
 				if (v2 == null) {
 					v2 = graph.insertVertex(targetParent, null, target.getElementName(), 
-							i * VERTEX_X, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
+							i * 0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
 					graph.getModel().setCollapsed(v2, true);
 					vertices.put(target, v2);
 				}
@@ -101,9 +101,9 @@ public class GraphWindow extends JFrame implements Runnable {
 			}
 		}
 		mxGraphLayout layout = new mxHierarchicalLayout(graph);
-		/*for (Entry<Cluster, Object> entry : clusters.entrySet()) {
+		for (Entry<Cluster, Object> entry : clusters.entrySet()) {
 			layout.execute(entry.getValue());
-		}*/
+		}
 		layout.execute(root);
 		
 		return graph;
