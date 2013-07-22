@@ -1,6 +1,8 @@
 package windows;
 
+import java.awt.Dimension;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.swing.JFrame;
@@ -26,9 +28,9 @@ public class GraphWindow extends JFrame implements Runnable {
 	 * 
 	 */
 	private static final long serialVersionUID = -6879792871504557695L;
-	
-	private static final int VERTEX_WIDTH = 80;
-	private static final int VERTEX_HEIGHT = 30;
+	private static final Dimension DEFAULT_SIZE = new Dimension(1280, 1024);
+	private static final int VERTEX_WIDTH = 30;
+	private static final int VERTEX_HEIGHT = 10;
 	private static final int VERTEX_X = 20;
 	private static final int VERTEX_Y = 20;
 	
@@ -37,13 +39,13 @@ public class GraphWindow extends JFrame implements Runnable {
 	public GraphWindow(Network network) {
 		super("Visualized network of the classes");
 		this.network = network;
-		setSize(1024, 780);
 	}
 	
 	
 	@Override
 	public void run() {
 		mxGraph graph = construct();
+		setPreferredSize(DEFAULT_SIZE);
 		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		getContentPane().add(graphComponent);
@@ -59,6 +61,7 @@ public class GraphWindow extends JFrame implements Runnable {
 		Object root = graph.getDefaultParent();
 		
 		graph.getModel().beginUpdate();
+		int i = 0;
 		for (DefaultEdge edge : network.edgeSet()) {
 			ICompilationUnit source = network.getEdgeSource(edge);
 			ICompilationUnit target = network.getEdgeTarget(edge);
@@ -77,13 +80,15 @@ public class GraphWindow extends JFrame implements Runnable {
 			try {
 				Object v1 = vertices.get(source);
 				if (v1 == null) {
-					v1 = graph.insertVertex(sourceParent, null, source.getElementName(), 0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
+					v1 = graph.insertVertex(sourceParent, null, source.getElementName(), 
+							i * VERTEX_X, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
 					graph.getModel().setCollapsed(v1, true);
 					vertices.put(source, v1);
 				}
 				Object v2 = vertices.get(target);
 				if (v2 == null) {
-					v2 = graph.insertVertex(targetParent, null, target.getElementName(), 0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
+					v2 = graph.insertVertex(targetParent, null, target.getElementName(), 
+							i * VERTEX_X, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
 					graph.getModel().setCollapsed(v2, true);
 					vertices.put(target, v2);
 				}
@@ -92,6 +97,7 @@ public class GraphWindow extends JFrame implements Runnable {
 			} finally {
 				// Updates the display
 				graph.getModel().endUpdate();
+				i++;
 			}
 		}
 		mxGraphLayout layout = new mxHierarchicalLayout(graph);

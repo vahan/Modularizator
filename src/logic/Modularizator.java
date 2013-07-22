@@ -12,11 +12,16 @@ import java.util.HashMap;
 public class Modularizator {
 	private Algorithm algorithm;
 	private Scorer scorer;
+	private double T;
+	private int nSteps;
 
+	private static double T_DEFAULT = 1.0/2000000;
+	private static int NSTEPS_DEFAULT = 1000;
 	private static Modularizator instance;
 
 	private Modularizator() {
-
+		T = T_DEFAULT;
+		nSteps = NSTEPS_DEFAULT;
 	}
 
 	public static Modularizator getInstance() {
@@ -32,11 +37,27 @@ public class Modularizator {
 	public Scorer getScorer() {
 		return scorer;
 	}
+	
+	public double getT() {
+		return T;
+	}
+	
+	public void setT(double T) {
+		this.T = T;
+	}
+	
+	public int getNSteps() {
+		return nSteps;
+	}
+	
+	public void setNSteps(int nSteps) {
+		this.nSteps = nSteps;
+	}
 
 	/**
 	 * Initialize all algorithm objects
 	 */
-	public void initAlgorithm(Network network, int nSteps) {
+	public void initAlgorithm(Network network) {
 		algorithm = new MarceloAlgorithm(network, nSteps);
 	}
 	

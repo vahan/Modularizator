@@ -43,11 +43,11 @@ public class MarceloAlgorithm extends Algorithm {
 		for (Cluster cluster : changedNetwork.getClusters().values())
 			if (nmax < moduleDependencies.get(cluster))
 				nmax = moduleDependencies.get(cluster);
-		double gamma = (double) nmax / T;
+		double gamma = (double) nmax / Modularizator.getInstance().getT();
 
 		double sum = 0;
 		for (Cluster cluster : changedNetwork.getClusters().values()) {
-			double exp = Math.exp((double) moduleDependencies.get(cluster) / T - gamma);
+			double exp = Math.exp((double) moduleDependencies.get(cluster) / Modularizator.getInstance().getT() - gamma);
 			moduleProbs.put(cluster, exp);
 			sum += exp;
 		}

@@ -47,11 +47,16 @@
 		<persistent value="true"/>
 		<attribute name="newsource"/>
 	</extension>
- <extension
-       point="org.eclipse.ui.ide.markerResolution">
-    <markerResolutionGenerator
-          class="modularizator.quickfix.QuickFixer"
-          markerType="modularizator.markers.problem">
-    </markerResolutionGenerator>
- </extension>
+	<extension point="org.eclipse.ui.ide.markerResolution">
+		<markerResolutionGenerator
+				class="modularizator.quickfix.QuickFixer"
+				markerType="modularizator.markers.problem">
+	</markerResolutionGenerator>
+	</extension>
+	<extension point="org.eclipse.ui.views">
+		<view id="modularizator.views.propertiesview"
+				name="Modularizator Properties View"
+				class="modularizator.views.PropertiesView"
+				icon="icons/view.gif"/>
+	</extension>
 </plugin>

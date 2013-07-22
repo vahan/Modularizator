@@ -26,8 +26,6 @@ public class ModularizeAction extends BaseAction {
 
 	private Scorer scorer;
 
-	private static final int nSteps = 1000; // TODO: make user-defined
-
 	/**
 	 * The constructor.
 	 */
@@ -40,7 +38,7 @@ public class ModularizeAction extends BaseAction {
 	@Override
 	public void run(IAction action) {
 		Network network = readNetwork();
-		modularizator.initAlgorithm(network, nSteps);
+		modularizator.initAlgorithm(network);
 		algorithm = modularizator.getAlgorithm();
 
 		Network optimizedNetwork = algorithm.optimize(scorer);
