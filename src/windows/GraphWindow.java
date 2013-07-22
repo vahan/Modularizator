@@ -60,7 +60,6 @@ public class GraphWindow extends JFrame implements Runnable {
 		Object root = graph.getDefaultParent();
 		
 		graph.getModel().beginUpdate();
-		int i = 0;
 		for (DefaultEdge edge : network.edgeSet()) {
 			ICompilationUnit source = network.getEdgeSource(edge);
 			ICompilationUnit target = network.getEdgeTarget(edge);
@@ -79,15 +78,13 @@ public class GraphWindow extends JFrame implements Runnable {
 			try {
 				Object v1 = vertices.get(source);
 				if (v1 == null) {
-					v1 = graph.insertVertex(sourceParent, null, source.getElementName(), 
-							0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
+					v1 = graph.insertVertex(sourceParent, null, "", 0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
 					graph.getModel().setCollapsed(v1, true);
 					vertices.put(source, v1);
 				}
 				Object v2 = vertices.get(target);
 				if (v2 == null) {
-					v2 = graph.insertVertex(targetParent, null, target.getElementName(), 
-							i * 0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
+					v2 = graph.insertVertex(targetParent, null, "", 0, 0, VERTEX_WIDTH, VERTEX_HEIGHT);
 					graph.getModel().setCollapsed(v2, true);
 					vertices.put(target, v2);
 				}
@@ -96,10 +93,9 @@ public class GraphWindow extends JFrame implements Runnable {
 			} finally {
 				// Updates the display
 				graph.getModel().endUpdate();
-				i++;
 			}
 		}
-		mxGraphLayout layout = new mxHierarchicalLayout(graph);
+		mxGraphLayout layout = new mxCircleLayout(graph);
 		for (Entry<Cluster, Object> entry : clusters.entrySet()) {
 			layout.execute(entry.getValue());
 		}
