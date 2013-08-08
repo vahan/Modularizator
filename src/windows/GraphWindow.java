@@ -1,5 +1,6 @@
 package windows;
 
+import java.awt.Canvas;
 import java.awt.Dimension;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,13 @@ import logic.Cluster;
 import logic.Network;
 
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.awt.SWT_AWT;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
 import org.jgrapht.graph.DefaultEdge;
 
 import com.mxgraph.layout.mxCircleLayout;
@@ -22,6 +30,8 @@ import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
+
+import org.eclipse.gef4.zest.dot.*;
 
 public class GraphWindow extends JFrame implements Runnable {
 
@@ -44,14 +54,17 @@ public class GraphWindow extends JFrame implements Runnable {
 	
 	@Override
 	public void run() {
-		mxGraph graph = construct();
+		/*mxGraph graph = construct();
 		setPreferredSize(DEFAULT_SIZE);
 		
 		mxGraphComponent graphComponent = new mxGraphComponent(graph);
 		getContentPane().add(graphComponent);
 		pack();
-		setVisible(true);
+		setVisible(true);*/
+		
+		
 	}
+	
 	
 	private mxGraph construct() {
 		mxGraph graph = new mxGraph();
