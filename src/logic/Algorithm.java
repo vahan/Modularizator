@@ -25,7 +25,7 @@ public abstract class Algorithm {
 		return changes;
 	}
 
-	public abstract Network optimize(Scorer scorer);
+	public abstract Network optimize();
 
 	public String getName() {
 		return name;

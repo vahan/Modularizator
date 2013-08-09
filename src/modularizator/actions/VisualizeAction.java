@@ -1,9 +1,11 @@
 package modularizator.actions;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import logic.Cluster;
 import logic.Network;
@@ -22,6 +24,8 @@ import org.jgrapht.graph.DefaultEdge;
 public class VisualizeAction extends BaseAction {
 	
 	private Network network = null;
+	
+	private Random rand = new Random();
 	
 	@Override
 	public void run(IAction action) {
@@ -59,6 +63,8 @@ public class VisualizeAction extends BaseAction {
 		for (Entry<Cluster, ArrayList<ICompilationUnit>> entry : clusters.entrySet()) {
 			String clusterName = entry.getKey().getModel().getElementName();
 			dotStr += "subgraph cluster_" + format(clusterName) + " { ";
+			
+			dotStr += "node [style=filled,color=\"#" + randomColorRGB() + "\"] ";
 			for (ICompilationUnit compUnit : entry.getValue()) {
 				dotStr += vertexName(compUnit) + "; ";
 			}
@@ -97,6 +103,14 @@ public class VisualizeAction extends BaseAction {
 	private String format(String name) {
 		String formatted = StringUtils.replace(name, ".", "_");
 		return formatted;
+	}
+	
+	private String randomColorRGB() {
+		float r = rand.nextFloat();
+		float g = rand.nextFloat();
+		float b = rand.nextFloat();
+		Color randomColor = new Color(r, g, b);
+		return Integer.toString(randomColor.getRGB());
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import logic.Algorithm;
 import logic.Cluster;
+import logic.MarceloScorer;
 import logic.Network;
 import logic.Scorer;
 import modularizator.quickfix.QuickFix;
@@ -12,6 +13,7 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will
@@ -23,8 +25,6 @@ import org.eclipse.jface.action.IAction;
  */
 public class ModularizeAction extends BaseAction {
 	private Algorithm algorithm;
-
-	private Scorer scorer;
 
 	/**
 	 * The constructor.
@@ -41,8 +41,13 @@ public class ModularizeAction extends BaseAction {
 		modularizator.initAlgorithm(network);
 		algorithm = modularizator.getAlgorithm();
 
-		Network optimizedNetwork = algorithm.optimize(scorer);
+		Network optimizedNetwork = algorithm.optimize();
+		double newScore = new MarceloScorer(optimizedNetwork).getScore();
+		double oldScore = new MarceloScorer(network).getScore();
 		showSuggestions(modularizator.getChanges());
+		MessageDialog.openInformation(shell, "Score", "Current score is "
+				+ Double.toString(oldScore) + "\n" + "The new score will be "
+				+ Double.toString(newScore));
 	}
 
 	private void showSuggestions(HashMap<Object, Cluster> changes) {

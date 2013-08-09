@@ -13,7 +13,7 @@ public class MarceloAlgorithm extends Algorithm {
 	}
 
 	@Override
-	public Network optimize(Scorer scorer) {
+	public Network optimize() {
 		HashMap<ICompilationUnit, Cluster> moduleAssignments = network.getClusters();
 
 		int time = 0;
