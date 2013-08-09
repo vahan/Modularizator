@@ -1,11 +1,14 @@
 package modularizator.actions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 import logic.Cluster;
 import logic.Network;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.gef4.zest.dot.DotGraph;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
@@ -15,20 +18,16 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.jgrapht.graph.DefaultEdge;
 
-import com.mxgraph.layout.mxCircleLayout;
-import com.mxgraph.layout.mxGraphLayout;
-import com.mxgraph.view.mxGraph;
-
-import windows.GraphWindow;
-
 
 public class VisualizeAction extends BaseAction {
 	
+	private Network network = null;
+	
 	@Override
 	public void run(IAction action) {
-		Network network = readNetwork();
+		network = readNetwork();
 		
-		show(network);
+		show();
 		
 		/*GraphWindow window = new GraphWindow(network);
 		Thread thread = new Thread(window);
@@ -41,16 +40,42 @@ public class VisualizeAction extends BaseAction {
 		}*/
 	}
 
-	private void show(Network network) {
-		Shell shell = new Shell();
-		DotGraph graph = new DotGraph("digraph {}", shell, SWT.NONE);
-		for (DefaultEdge edge : network.edgeSet()) {
-			String source = network.getEdgeSource(edge).getElementName();
-			source = source.substring(0, source.indexOf("."));
-			String target = network.getEdgeTarget(edge).getElementName();
-			target = target.substring(0, target.indexOf("."));
-			graph.add(source + "->" + target);
+	private void show() {
+		//Represent the network via clusters
+		HashMap<Cluster, ArrayList<ICompilationUnit>> clusters = new HashMap<Cluster, ArrayList<ICompilationUnit>>();
+		for (Entry<ICompilationUnit, Cluster> entry : network.getClusters().entrySet()) {
+			ArrayList<ICompilationUnit> compUnits = clusters.get(entry.getValue());
+			if (compUnits == null) {
+				compUnits = new ArrayList<ICompilationUnit>();
+				compUnits.add(entry.getKey());
+				clusters.put(entry.getValue(), compUnits);
+			} else {
+				compUnits.add(entry.getKey());
+			}
 		}
+		//Make a dot string
+		//Add vertices to the dot string
+		String dotStr = "digraph NAME { ";
+		for (Entry<Cluster, ArrayList<ICompilationUnit>> entry : clusters.entrySet()) {
+			String clusterName = entry.getKey().getModel().getElementName();
+			dotStr += "subgraph cluster_" + format(clusterName) + " { ";
+			for (ICompilationUnit compUnit : entry.getValue()) {
+				dotStr += vertexName(compUnit) + "; ";
+			}
+			dotStr += " } ";
+		}
+		//Add edges to the dot string
+		for (DefaultEdge edge : network.edgeSet()) {
+			ICompilationUnit source = network.getEdgeSource(edge);
+			ICompilationUnit target = network.getEdgeTarget(edge);
+			dotStr += " " + vertexName(source) + " -> " + vertexName(target) + "; ";
+		}
+		dotStr += " } ";
+		//Draw it on a new shell
+		Shell shell = new Shell();
+		DotGraph graph = new DotGraph(dotStr, shell, SWT.NONE);
+		//DotGraph graph = new DotGraph("digraph { subgraph cluster1 { n1; } subgraph cluster2 { n2; } subgraph cluster3 { n3; } n1 -> n2; n2 -> n3; n3 -> n1; }", shell, SWT.NONE);
+		
 		shell.setText(DotGraph.class.getSimpleName());
 		shell.setLayout(new FillLayout());
 		shell.setSize(600, 300);
@@ -60,6 +85,18 @@ public class VisualizeAction extends BaseAction {
 			if (!display.readAndDispatch())
 				display.sleep();
 		display.dispose();
+	}
+	
+	private String vertexName(ICompilationUnit vertex) {
+		Cluster cluster = network.getCluster(vertex);
+		String vertexName = vertex.getElementName().substring(0, vertex.getElementName().lastIndexOf("."));
+		String name = format(cluster.getModel().getElementName()) + "_" + vertexName;
+		return name;
+	}
+	
+	private String format(String name) {
+		String formatted = StringUtils.replace(name, ".", "_");
+		return formatted;
 	}
 
 }
