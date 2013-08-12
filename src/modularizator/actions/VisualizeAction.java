@@ -1,9 +1,7 @@
 package modularizator.actions;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Random;
 
@@ -14,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.eclipse.gef4.zest.dot.DotGraph;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
@@ -59,12 +58,12 @@ public class VisualizeAction extends BaseAction {
 		}
 		//Make a dot string
 		//Add vertices to the dot string
-		String dotStr = "digraph NAME { ";
+		String dotStr = "digraph NAME { node [shape=point]; ";
 		for (Entry<Cluster, ArrayList<ICompilationUnit>> entry : clusters.entrySet()) {
 			String clusterName = entry.getKey().getModel().getElementName();
 			dotStr += "subgraph cluster_" + format(clusterName) + " { ";
 			
-			dotStr += "node [style=filled,color=\"#" + randomColorRGB() + "\"] ";
+			dotStr += "node [label=\"\",style=filled,color=\"" + randomColor() + "\"]; ";
 			for (ICompilationUnit compUnit : entry.getValue()) {
 				dotStr += vertexName(compUnit) + "; ";
 			}
@@ -76,7 +75,11 @@ public class VisualizeAction extends BaseAction {
 			ICompilationUnit target = network.getEdgeTarget(edge);
 			dotStr += " " + vertexName(source) + " -> " + vertexName(target) + "; ";
 		}
-		dotStr += " } ";
+		
+		dotStr += "} ";
+		
+		MessageDialog.openInformation(shell, "dotStr", dotStr);
+		
 		//Draw it on a new shell
 		Shell shell = new Shell();
 		DotGraph graph = new DotGraph(dotStr, shell, SWT.NONE);
@@ -105,12 +108,11 @@ public class VisualizeAction extends BaseAction {
 		return formatted;
 	}
 	
-	private String randomColorRGB() {
-		float r = rand.nextFloat();
-		float g = rand.nextFloat();
-		float b = rand.nextFloat();
-		Color randomColor = new Color(r, g, b);
-		return Integer.toString(randomColor.getRGB());
+	private String randomColor() {
+		double r = Math.round(rand.nextFloat() * 10000.0) / 10000.0;
+		double g = Math.round(rand.nextFloat() * 10000.0) / 10000.0;
+		double b = Math.round(rand.nextFloat() * 10000.0) / 10000.0;
+		return Double.toString(r) + "," + g + "," + b;
 	}
 
 }
