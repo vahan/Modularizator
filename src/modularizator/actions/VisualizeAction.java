@@ -89,7 +89,7 @@ public class VisualizeAction extends BaseAction {
 			Cluster targetCluster = network.getCluster(target);
 			Node targetNode = graphModel.factory().newNode(vertexName(target));
 			targetNode.getNodeData().setLabel(Integer.toString(targetCluster.getId()));
-			//targetNode.getNodeData().setSize(5);
+			targetNode.getNodeData().setSize(3);
 			dGraph.addNode(targetNode);
 			
 			Edge edge = graphModel.factory().newEdge(sourceNode, targetNode, 1f, true);
@@ -102,12 +102,9 @@ public class VisualizeAction extends BaseAction {
 		PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
 		PreviewModel prModel = previewController.getModel();
 		PreviewProperties props = prModel.getProperties();
-		props.putValue(PreviewProperty.SHOW_NODE_LABELS, Boolean.TRUE);
-		props.putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(Color.BLACK));
-		//props.putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
-		//props.putValue(PreviewProperty.SHOW_EDGE_LABELS, Boolean.TRUE);
-		//props.putValue(PreviewProperty.NODE_BORDER_WIDTH, 0f);
-		//props.putValue(PreviewProperty.NODE_LABEL_COLOR, new DependantOriginalColor(Color.BLACK));
+		props.putValue(PreviewProperty.EDGE_COLOR, new EdgeColor(EdgeColor.Mode.SOURCE));
+		props.putValue(PreviewProperty.EDGE_THICKNESS, new Float(0.1f));
+		props.putValue(PreviewProperty.NODE_BORDER_WIDTH, 0f);
 		props.putValue(PreviewProperty.BACKGROUND_COLOR, Color.WHITE);
 		previewController.refreshPreview();
 
