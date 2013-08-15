@@ -57,47 +57,79 @@ import processing.core.PApplet;
 
 public class VisualizeAction extends BaseAction {
 	
-	private Network network = null;
-	
-	private Random rand = new Random();
+	Network network;
 	
 	@Override
 	public void run(IAction action) {
 		network = readNetwork();
 		
-		makeGephi();
-		
+		PApplet applet = makeGephiApplet(network);
+		showGephiApplet(applet);
 	}
 	
-	private void makeGephi() {
+	public PApplet makeGephiApplet(Network network) {
+		DirectedGraph dGraph = makeGephiGraph(network);
+		GraphModel graphModel = dGraph.getGraphModel();
+		//Run the layout algorithm
+		runYifanHuLayout(graphModel);
+		//Color nodes according to their labels
+		color(dGraph);
+		//Set the previeController
+		PreviewController previewController = makeGephiPreviewController();
+		//New Processing target, get the PApplet
+		ProcessingTarget target = (ProcessingTarget) previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
+		PApplet applet = target.getApplet();
+		applet.init();
+		//Refresh the preview and reset the zoom
+		previewController.render(target);
+		target.refresh();
+		//target.resetZoom();
+		
+		return applet;
+	}
+	
+	private void showGephiApplet(PApplet applet) {
+		//Add the applet to a JFrame and display it
+		JFrame frame = new JFrame("Interaction Graph");
+		frame.setLayout(new BorderLayout());
+
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.add(applet, BorderLayout.CENTER);
+
+		frame.pack();
+		frame.setVisible(true);
+	}
+	
+	private DirectedGraph makeGephiGraph(Network network) {
 		// Init a project - and therefore a workspace
 		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
 		pc.newProject();
 		Workspace workspace = pc.getCurrentWorkspace();
 		GraphModel graphModel = Lookup.getDefault().lookup(GraphController.class).getModel();
-		DirectedGraph dGraph = graphModel.getDirectedGraph();
-		//Add nodes and edges to graph
+		DirectedGraph dGraph = graphModel.getDirectedGraph();//Represent the network via clusters
+		HashMap<ICompilationUnit, Cluster> nodes = network.getClusters();
+		//Add vertices to the graph
+		for (Entry<ICompilationUnit, Cluster> entry : nodes.entrySet()) {
+			ICompilationUnit cu = entry.getKey();
+			Cluster cluster = entry.getValue();
+			Node node = graphModel.factory().newNode(vertexName(cu));
+			node.getNodeData().setLabel(Integer.toString(cluster.getId()));
+			dGraph.addNode(node);
+		}
+		//Add edges to graph
 		for (DefaultEdge e : network.edgeSet()) {
 			ICompilationUnit source = network.getEdgeSource(e);
-			Cluster sourceCluster = network.getCluster(source);
-			Node sourceNode = graphModel.factory().newNode(vertexName(source));
-			sourceNode.getNodeData().setLabel(Integer.toString(sourceCluster.getId()));
-			//sourceNode.getNodeData().setSize(5);
-			dGraph.addNode(sourceNode);
-			
+			Node sourceNode = dGraph.getNode(vertexName(source));
 			ICompilationUnit target = network.getEdgeTarget(e);
-			Cluster targetCluster = network.getCluster(target);
-			Node targetNode = graphModel.factory().newNode(vertexName(target));
-			targetNode.getNodeData().setLabel(Integer.toString(targetCluster.getId()));
-			targetNode.getNodeData().setSize(3);
-			dGraph.addNode(targetNode);
-			
+			Node targetNode = dGraph.getNode(vertexName(target));
 			Edge edge = graphModel.factory().newEdge(sourceNode, targetNode, 1f, true);
-			//edge.getEdgeData().setLabel(sourceNode.getNodeData().getLabel());
+			edge.getEdgeData().setLabel(sourceNode.getNodeData().getLabel());
 			dGraph.addEdge(edge);
-			System.out.println("Is " + dGraph.getEdge(sourceNode, targetNode) + " directed: " + edge.isDirected());
 		}
-		
+		return dGraph;
+	}
+	
+	private PreviewController makeGephiPreviewController() {
 		// Preview configuration
 		PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
 		PreviewModel prModel = previewController.getModel();
@@ -107,7 +139,22 @@ public class VisualizeAction extends BaseAction {
 		props.putValue(PreviewProperty.NODE_BORDER_WIDTH, 0f);
 		props.putValue(PreviewProperty.BACKGROUND_COLOR, Color.WHITE);
 		previewController.refreshPreview();
-
+		return previewController;
+	}
+	
+	private void runYifanHuLayout(GraphModel graphModel) {
+		// Run Yifan Hu layout algorithm on the graph
+		YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
+		layout.setGraphModel(graphModel);
+		layout.resetPropertiesValues();
+		layout.setOptimalDistance(20f);
+		layout.initAlgo();
+		for (int i = 0; i < 100 && layout.canAlgo(); ++i) {
+			layout.goAlgo();
+		}
+	}
+	
+	private void color(DirectedGraph dGraph) {
 		//Partition the graph and color accordingly
 		PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
 		AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
@@ -115,36 +162,6 @@ public class VisualizeAction extends BaseAction {
 		NodeColorTransformer nodeColorTransformer = new NodeColorTransformer();
 		nodeColorTransformer.randomizeColors(p);
 		partitionController.transform(p, nodeColorTransformer);
-		
-		// Run Yifan Hu layout algorithm on the graph
-		/*YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
-		layout.setGraphModel(graphModel);
-		layout.resetPropertiesValues();
-		layout.setOptimalDistance(200f);
-		layout.initAlgo();
-		for (int i = 0; i < 10000 && layout.canAlgo(); ++i) {
-			layout.goAlgo();
-		}*/
-		
-		//New Processing target, get the PApplet
-		ProcessingTarget target = (ProcessingTarget) previewController.getRenderTarget(RenderTarget.PROCESSING_TARGET);
-		PApplet applet = target.getApplet();
-		applet.init();
-
-		//Refresh the preview and reset the zoom
-		previewController.render(target);
-		target.refresh();
-		//target.resetZoom();
-
-		//Add the applet to a JFrame and display
-		JFrame frame = new JFrame("Interaction Graph");
-		frame.setLayout(new BorderLayout());
-
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(applet, BorderLayout.CENTER);
-
-		frame.pack();
-		frame.setVisible(true);
 	}
 	
 	private String vertexName(ICompilationUnit vertex) {
