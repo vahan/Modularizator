@@ -2,13 +2,19 @@ package modularizator;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.widgets.MessageBox;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.DirectedGraph;
@@ -16,6 +22,7 @@ import org.gephi.graph.api.Edge;
 import org.gephi.graph.api.GraphController;
 import org.gephi.graph.api.GraphModel;
 import org.gephi.graph.api.Node;
+import org.gephi.io.exporter.api.ExportController;
 import org.gephi.layout.plugin.force.StepDisplacement;
 import org.gephi.layout.plugin.force.yifanHu.YifanHuLayout;
 import org.gephi.partition.api.Partition;
@@ -51,6 +58,33 @@ public class GephiVisualizor extends JFrame implements Runnable {
 	
 	@Override
 	public void run() {
+		exportAndOpen();
+		//showInApplet();
+	}
+	
+	public void exportAndOpen() {
+		//Preview
+		PApplet applet = makeApplet();
+		//Export
+		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
+		String fileName = "/home/vahan/Desktop/" + network.getName() + ".pdf";
+		File file = new File(fileName);
+		try {
+			ec.exportFile(file);
+			if (Desktop.isDesktopSupported()) {
+				Desktop.getDesktop().open(file);
+			}
+			else {
+				JOptionPane.showMessageDialog(null, 
+						"Can't open the exported file from " + file, "Error", JOptionPane.INFORMATION_MESSAGE);
+			}
+		} catch (IOException ex) {
+			ex.printStackTrace();
+			return;
+		}
+	}
+	
+	public void showInApplet() {
 		PApplet applet = makeApplet();
 		//Add the applet to a JFrame and display it
 		setTitle(network.getName());
@@ -83,10 +117,9 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		//Refresh the preview and reset the zoom
 		previewController.render(target);
 		target.refresh();
-		target.resetZoom();
+		//target.resetZoom();
 		
 		return applet;
-		
 	}
 
 	private DirectedGraph makeGephiGraph(Network network) {

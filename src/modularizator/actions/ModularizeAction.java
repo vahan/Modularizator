@@ -61,16 +61,14 @@ public class ModularizeAction extends BaseAction {
 	}
 	
 	private void showVisualizations(Network oldNetwork, Network newNetwork) {
-		try {
-			GephiVisualizor oldWin = new GephiVisualizor(oldNetwork);
-			javax.swing.SwingUtilities.invokeAndWait(oldWin);
-			GephiVisualizor newWin = new GephiVisualizor(newNetwork);
-		javax.swing.SwingUtilities.invokeAndWait(newWin);
-		} catch (InvocationTargetException | InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return;
-		}
+		GephiVisualizor oldWin = new GephiVisualizor(oldNetwork);
+		oldWin.run();
+		//Thread oldThread = new Thread(oldWin);
+		//oldThread.start();
+		GephiVisualizor newWin = new GephiVisualizor(newNetwork);
+		//Thread newThread = new Thread(newWin);
+		//newThread.start();
+		newWin.run();
 	}
 
 	private void showSuggestions(HashMap<Object, Cluster> changes) {
