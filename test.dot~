@@ -1,0 +1,5 @@
+digraph G {
+	n1 [ style=filled,shape="box",fillcolor="antiquewhite:aquamarine" ];
+	n2 [ shape="ellipse",fillcolor="bisque4:blue2" ];
+	n3 [ shape="circle",fillcolor="cadetblue1:chocolate1" ];
+}
