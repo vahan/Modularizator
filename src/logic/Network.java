@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
@@ -18,14 +19,25 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 
 	private HashMap<ICompilationUnit, Cluster> clusters;
 	
-	public Network(Class<? extends DefaultEdge> edgeClass, HashMap<ICompilationUnit, Cluster> clusters) {
+	private String name;
+	
+	public Network(Class<? extends DefaultEdge> edgeClass, HashMap<ICompilationUnit, Cluster> clusters, String name) {
 		super(edgeClass);
 		this.clusters = clusters;
+		this.name = name;
 		initVertices();
 	}
 	
 	public HashMap<ICompilationUnit, Cluster> getClusters() {
 		return clusters;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public Cluster getCluster(Object vertex) {
@@ -81,6 +93,19 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 			graph.addEdge(source, target);
 		}
 		return graph;
+	}
+	
+	@Override
+	public Object clone() {
+		Network cloned = (Network) super.clone();
+
+		HashMap<ICompilationUnit, Cluster> clonedClusters = new HashMap<ICompilationUnit, Cluster>();
+		for (Entry<ICompilationUnit, Cluster> entry : clusters.entrySet()) {
+			clonedClusters.put(entry.getKey(), (Cluster) entry.getValue().clone());
+		}
+		cloned.clusters = clonedClusters;
+		
+		return cloned;
 	}
 
 	private void initVertices() {

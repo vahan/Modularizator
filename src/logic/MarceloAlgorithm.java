@@ -14,10 +14,11 @@ public class MarceloAlgorithm extends Algorithm {
 
 	@Override
 	public Network optimize() {
-		HashMap<ICompilationUnit, Cluster> moduleAssignments = network.getClusters();
-
 		int time = 0;
 		Network changedNetwork = (Network) network.clone();
+		changedNetwork.setName("Optimized Network");
+		HashMap<ICompilationUnit, Cluster> moduleAssignments = changedNetwork.getClusters();
+		
 		while (time < nSteps) {
 			changedNetwork = change(changedNetwork, moduleAssignments);
 			time++;
@@ -53,7 +54,7 @@ public class MarceloAlgorithm extends Algorithm {
 		}
 		double rand = rnd.nextDouble() * sum;
 		double acc = 0;
-		Iterator<Cluster> it = network.getClusters().values().iterator();
+		Iterator<Cluster> it = changedNetwork.getClusters().values().iterator();
 		Cluster pos = null;
 		while (acc < rand) {
 			pos = it.next();

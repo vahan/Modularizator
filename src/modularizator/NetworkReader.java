@@ -30,8 +30,8 @@ public class NetworkReader {
 
 	private final IJavaProject javaProject;
 
-	private Network network = new Network(DefaultEdge.class, new HashMap<ICompilationUnit, Cluster>());
-
+	private Network network = new Network(DefaultEdge.class, new HashMap<ICompilationUnit, Cluster>(), "Initial structure");
+	
 	public NetworkReader(IJavaProject javaProject) {
 		this.javaProject = javaProject;
 	}
@@ -61,34 +61,12 @@ public class NetworkReader {
 			throws JavaModelException {
 		for (ICompilationUnit compUnit : compUnits) {
 			//addEdges(compUnit);
-			addEdges2(compUnit);
+			addEdges(compUnit);
 			network.add(compUnit, packageFrg);
 		}
 	}
-
-	private void addEdges(ICompilationUnit source) throws JavaModelException {
-		network.addVertex(source);
-		IImportDeclaration[] imports = source.getImports();
-		for (IImportDeclaration impDec : imports) {
-			String elemName = impDec.getElementName();
-			String className = elemName.substring(elemName.lastIndexOf("."));
-			if (className.equals("*")) {
-				// TODO: Deal with the * imports; impDec.isOndemand()
-				continue;
-			}
-			IType iType = javaProject.findType(elemName);
-			if (iType == null)
-				continue; //TODO: sometimes it gets nulls, but should it??
-			ICompilationUnit target = iType.getCompilationUnit();
-			if (target == null)
-				continue;
-			network.addVertex(target); // The vertex must be in the graph before its edge can be added
-			network.addEdge(source, target);
-		}
-	}
 	
-	
-	private void addEdges2(final ICompilationUnit target) {
+	private void addEdges(final ICompilationUnit target) {
 		network.addVertex(target);
 		String elemName = target.getElementName();
 		elemName = elemName.substring(0, elemName.lastIndexOf("."));

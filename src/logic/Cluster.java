@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import org.eclipse.jdt.core.IJavaElement;
 
-public class Cluster {
+public class Cluster implements Cloneable {
 	
 	private static int counter = 0;
 	
@@ -35,10 +35,15 @@ public class Cluster {
 		return id;
 	}
 	
-	
-
 	public IJavaElement getModel() {
 		return sourceElement;
+	}
+	
+	@Override
+	public Object clone() {
+		Cluster cloned = new Cluster(sourceElement);
+		
+		return cloned;
 	}
 
 	@Override

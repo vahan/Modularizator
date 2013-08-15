@@ -1,12 +1,19 @@
 package modularizator.actions;
 
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+
+import javax.swing.JFrame;
 
 import logic.Algorithm;
 import logic.Cluster;
 import logic.MarceloScorer;
 import logic.Network;
 import logic.Scorer;
+import modularizator.GephiVisualizor;
 import modularizator.quickfix.QuickFix;
 
 import org.eclipse.core.resources.IMarker;
@@ -14,6 +21,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
+
+import processing.core.PApplet;
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will
@@ -48,6 +57,20 @@ public class ModularizeAction extends BaseAction {
 		MessageDialog.openInformation(shell, "Score", "Current score is "
 				+ Double.toString(oldScore) + "\n" + "The new score will be "
 				+ Double.toString(newScore));
+		showVisualizations(network, optimizedNetwork);
+	}
+	
+	private void showVisualizations(Network oldNetwork, Network newNetwork) {
+		try {
+			GephiVisualizor oldWin = new GephiVisualizor(oldNetwork);
+			javax.swing.SwingUtilities.invokeAndWait(oldWin);
+			GephiVisualizor newWin = new GephiVisualizor(newNetwork);
+		javax.swing.SwingUtilities.invokeAndWait(newWin);
+		} catch (InvocationTargetException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return;
+		}
 	}
 
 	private void showSuggestions(HashMap<Object, Cluster> changes) {
