@@ -43,9 +43,13 @@ public class MarceloScorer extends Scorer {
 		for (DefaultEdge edge : edgeSet) {
 			Object sourceVertex = network.getEdgeSource(edge);
 			Object targetVertex = network.getEdgeTarget(edge);
-			int sourceCluster = network.getCluster(sourceVertex).getId();
-			int targetCluster = network.getCluster(targetVertex).getId();
-			e[sourceCluster][targetCluster]++;
+			Cluster sourceCluster = network.getCluster(sourceVertex);
+			if (sourceCluster == null)
+				continue;
+			Cluster targetCluster = network.getCluster(targetVertex);
+			if (targetCluster == null)
+				continue;
+			e[sourceCluster.getId()][targetCluster.getId()]++;
 		}
 		int edgesCount = edgeSet.size();
 		if (edgesCount == 0)

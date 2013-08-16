@@ -52,7 +52,9 @@ public class NetworkReader {
 	 * @return	The generated network
 	 */
 	public Network read() {
+		System.out.println("Reading the project");
 		readClusters();
+		System.out.println("Done!");
 		return network;
 	}
 	/**
@@ -112,7 +114,7 @@ public class NetworkReader {
 				ICompilationUnit source = getCompilationUnit(elem);
 				if (source == null)
 					return;
-				System.out.println(source.getClass());
+				//System.out.println(source.getClass());
 				network.addVertex(source);
 				network.addEdge(source, target);
 			}

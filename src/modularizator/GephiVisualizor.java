@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.MessageBox;
 import org.gephi.data.attributes.api.AttributeController;
@@ -170,8 +171,12 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		for (DefaultEdge e : network.edgeSet()) {
 			ICompilationUnit source = network.getEdgeSource(e);
 			Node sourceNode = dGraph.getNode(vertexName(source));
+			if (sourceNode == null)
+				continue;
 			ICompilationUnit target = network.getEdgeTarget(e);
 			Node targetNode = dGraph.getNode(vertexName(target));
+			if (targetNode == null)
+				continue;
 			Edge edge = graphModel.factory().newEdge(sourceNode, targetNode, 1f, true);
 			edge.getEdgeData().setLabel(sourceNode.getNodeData().getLabel());
 			dGraph.addEdge(edge);
@@ -231,7 +236,15 @@ public class GephiVisualizor extends JFrame implements Runnable {
 	private String vertexName(ICompilationUnit vertex) {
 		Cluster cluster = network.getCluster(vertex);
 		String vertexName = vertex.getElementName().substring(0, vertex.getElementName().lastIndexOf("."));
-		String name = format(cluster.getModel().getElementName()) + "_" + vertexName;
+		String name;
+		if (cluster == null) {
+			name = Long.toString(new Date().getTime());
+		} else {
+			IJavaElement model = cluster.getModel();
+			String clusterName = model == null ? Long.toString(new Date().getTime()) 
+												: model.getElementName();
+			name = format(clusterName) + "_" + vertexName;
+		}
 		return name;
 	}
 	/**
