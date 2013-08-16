@@ -1,18 +1,11 @@
 package modularizator.actions;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-
-import javax.swing.JFrame;
 
 import logic.Algorithm;
 import logic.Cluster;
 import logic.MarceloScorer;
 import logic.Network;
-import logic.Scorer;
 import modularizator.GephiVisualizor;
 import modularizator.quickfix.QuickFix;
 
@@ -22,17 +15,16 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 
-import processing.core.PApplet;
 
 /**
- * Our sample action implements workbench action delegate. The action proxy will
- * be created by the workbench and shown in the UI. When the user tries to use
- * the action, this delegate will be created and execution will be delegated to
- * it.
- * 
- * @see IWorkbenchWindowActionDelegate
+ * Used to run the modularization
+ * @author vahan
+ *
  */
 public class ModularizeAction extends BaseAction {
+	/**
+	 * The algorithm to be used for modularizing
+	 */
 	private Algorithm algorithm;
 
 	/**
@@ -59,7 +51,12 @@ public class ModularizeAction extends BaseAction {
 				+ Double.toString(newScore));
 		showVisualizations(network, optimizedNetwork);
 	}
-	
+	/**
+	 * Shows the network before and after modularization
+	 * The networks are imported into PDFs, which are then opened
+	 * @param oldNetwork
+	 * @param newNetwork
+	 */
 	private void showVisualizations(Network oldNetwork, Network newNetwork) {
 		GephiVisualizor oldWin = new GephiVisualizor(oldNetwork);
 		oldWin.run();
@@ -70,7 +67,10 @@ public class ModularizeAction extends BaseAction {
 		//newThread.start();
 		newWin.run();
 	}
-
+	/**
+	 * Shows all markers arising after running the modularization algorithm
+	 * @param changes
+	 */
 	private void showSuggestions(HashMap<Object, Cluster> changes) {
 		removeAllMarkers();
 		for (Object vertex : changes.keySet()) {

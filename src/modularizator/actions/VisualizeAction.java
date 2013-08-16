@@ -7,9 +7,15 @@ import org.eclipse.jface.action.IAction;
 import logic.Network;
 import modularizator.GephiVisualizor;
 
-
+/**
+ * Used to shows the network via Gephi toolkit
+ * @author vahan
+ *
+ */
 public class VisualizeAction extends BaseAction {
-	
+	/**
+	 * The network to be visualized
+	 */
 	Network network;
 	
 	@Override

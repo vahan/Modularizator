@@ -26,21 +26,38 @@ import org.eclipse.jdt.core.search.SearchPattern;
 import org.eclipse.jdt.core.search.SearchRequestor;
 import org.jgrapht.graph.DefaultEdge;
 
+/**
+ * Used to read the network from the eclipse java project
+ * @author vahan
+ *
+ */
 public class NetworkReader {
-
+	/**
+	 * The java project to read from
+	 */
 	private final IJavaProject javaProject;
-
+	/**
+	 * The network to be created based on the java project
+	 */
 	private Network network = new Network(DefaultEdge.class, new HashMap<ICompilationUnit, Cluster>(), "Initial structure");
-	
+	/**
+	 * Constructor
+	 * @param javaProject
+	 */
 	public NetworkReader(IJavaProject javaProject) {
 		this.javaProject = javaProject;
 	}
-
+	/**
+	 * Reads the network from the java project
+	 * @return	The generated network
+	 */
 	public Network read() {
 		readClusters();
 		return network;
 	}
-
+	/**
+	 * Reads the network as clusters, vertices and edges from java packages, classes and references
+	 */
 	private void readClusters() {
 		try {
 			IPackageFragment[] packageFragments = javaProject.getPackageFragments();
@@ -56,7 +73,12 @@ public class NetworkReader {
 			return;
 		}
 	}
-
+	/**
+	 * Reads the compilation units of a package into the network
+	 * @param compUnits
+	 * @param packageFrg
+	 * @throws JavaModelException
+	 */
 	private void readCluster(ICompilationUnit[] compUnits, IPackageFragment packageFrg)
 			throws JavaModelException {
 		for (ICompilationUnit compUnit : compUnits) {
@@ -65,7 +87,10 @@ public class NetworkReader {
 			network.add(compUnit, packageFrg);
 		}
 	}
-	
+	/**
+	 * Adds edges into the network from cross-references among files
+	 * @param target
+	 */
 	private void addEdges(final ICompilationUnit target) {
 		network.addVertex(target);
 		String elemName = target.getElementName();

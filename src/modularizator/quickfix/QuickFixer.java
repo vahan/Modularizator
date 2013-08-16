@@ -4,6 +4,11 @@ import org.eclipse.core.resources.IMarker;
 import org.eclipse.ui.IMarkerResolution;
 import org.eclipse.ui.IMarkerResolutionGenerator;
 
+/**
+ * Used to generate the modularizator fixers
+ * @author vahan
+ *
+ */
 public class QuickFixer implements IMarkerResolutionGenerator {
 
 	@Override

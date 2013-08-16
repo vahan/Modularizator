@@ -25,11 +25,24 @@ import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
 
 @SuppressWarnings("restriction")
+/**
+ * Used to fixes the markers generated after modularization
+ * @author vahan
+ *
+ */
 public class Fixer {
-	
+	/**
+	 * The marker to be fixed
+	 */
 	private final IMarker marker;
+	/**
+	 * The new location of the class, on which the marker is put
+	 */
 	private IJavaElement newSource = null;
-	
+	/**
+	 * Constructor
+	 * @param marker
+	 */
 	public Fixer(IMarker marker) {
 		super();
 		this.marker = marker;
@@ -66,7 +79,9 @@ public class Fixer {
 		return newSource;
 	}
 	
-	
+	/**
+	 * Makes the fix
+	 */
 	public void fix() {
 		IResource source = marker.getResource();
 		IJavaElement javaElem = JavaCore.create(source);
@@ -74,7 +89,7 @@ public class Fixer {
 		IProgressMonitor pm = new NullProgressMonitor();
 		
 		try {
-			//TODO The following code is copied from org.eclipse.jdt.internal.corext.refactoring.reorg.ReorgPolicyFactory
+			//The following code is copied from org.eclipse.jdt.internal.corext.refactoring.reorg.ReorgPolicyFactory
 			CompositeChange composite= new DynamicValidationStateChange(RefactoringCoreMessages.ReorgPolicy_move);
 			MoveCuUpdateCreator creator= new MoveCuUpdateCreator(new ICompilationUnit[] {compUnit}, (IPackageFragment) newSource);
 			TextChangeManager fChangeManager = creator.createChangeManager(new SubProgressMonitor(pm, 1), new RefactoringStatus());

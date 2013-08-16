@@ -21,21 +21,37 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
+/**
+ * Abstract base class for all actions
+ * @author vahan
+ *
+ */
 public abstract class BaseAction implements IObjectActionDelegate {
-	
+	/**
+	 * Fixed name for modularizator markers, used in extensions
+	 */
 	public final static String MARKER_NAME = "modularizator.markers.problem";
-	
+	/**
+	 * Fixed type for modularizator markers, used in extensions
+	 */
 	public final static String MARKER_TYPE = "org.eclipse.core.resources.problemmarker";
-
+	/**
+	 * The currently selected eclipse project
+	 */
 	protected IProject selectedProject;
-
+	/**
+	 * The current shell, to be used as a parent shell for messages
+	 */
 	protected Shell shell;
-
+	/**
+	 * The modularizator object
+	 */
 	protected Modularizator modularizator = Modularizator.getInstance();
 
 
 	/**
 	 * @see IActionDelegate#selectionChanged(IAction, ISelection)
+	 * Changes the current project once the user selects a new one
 	 */
 	@Override
 	public void selectionChanged(IAction action, ISelection selection) {
@@ -60,16 +76,20 @@ public abstract class BaseAction implements IObjectActionDelegate {
 	@Override
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
 		shell = targetPart.getSite().getShell();
-
 	}
-	
+	/**
+	 * Reads the projects into a network
+	 * @return	the generated network
+	 */
 	protected Network readNetwork() {
 		IJavaProject javaProject = JavaCore.create(selectedProject);
 		NetworkReader reader = new NetworkReader(javaProject);
 		Network network = reader.read();
 		return network;
 	}
-	
+	/**
+	 * Clears all modularizator markers
+	 */
 	protected void removeAllMarkers() {
 		IWorkspaceRoot root = selectedProject.getWorkspace().getRoot();
 		try {

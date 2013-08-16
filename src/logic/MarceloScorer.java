@@ -5,19 +5,30 @@ import java.util.Set;
 
 import org.jgrapht.graph.DefaultEdge;
 
+/**
+ * Returns a number representing a certain score on the network
+ * @author vahan
+ *
+ */
 public class MarceloScorer extends Scorer {
 	
-	
+	/**
+	 * Constructor
+	 * @param network
+	 */
 	public MarceloScorer(Network network) {
 		super(network);
 	}
-	
 	
 	@Override
 	public double getScore() {
 		return newmanModularityDirected();
 	}
 
+	/**
+	 * Marcelo know how it works
+	 * @return
+	 */
 	private double newmanModularityDirected() {
 		int clustersCount = Cluster.getClustersCount();
 		double[][] e = new double[clustersCount][clustersCount]; // fractions of edges linking vertices of cluster i to vertices of cluster j

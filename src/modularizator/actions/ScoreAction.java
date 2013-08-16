@@ -6,6 +6,11 @@ import logic.Scorer;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 
+/**
+ * Used to show the score of the network
+ * @author vahan
+ *
+ */
 public class ScoreAction extends BaseAction {
 	
 	@Override
@@ -13,7 +18,9 @@ public class ScoreAction extends BaseAction {
 		showScore();
 
 	}
-
+	/**
+	 * Shows the score in a message dialog
+	 */
 	private void showScore() {
 		Network network = readNetwork();
 		modularizator.initScorer(network);

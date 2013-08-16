@@ -5,16 +5,33 @@ import java.util.HashMap;
 
 import org.eclipse.jdt.core.IJavaElement;
 
+/**
+ * Represents clusters of a network
+ * @author vahan
+ *
+ */
 public class Cluster implements Cloneable {
-	
+	/**
+	 * Static counter to make unique IDs for each cluster
+	 */
 	private static int counter = 0;
-	
+	/**
+	 * All so far created clusters stored to be easily accessible by IDs
+	 */
 	private static HashMap<Integer, Cluster> clusters = new HashMap<Integer, Cluster>();
-	
+	/**
+	 * Unique ID
+	 */
 	private final int id;
-	
+	/**
+	 * The Java source element that is represented by the cluster. Usually a package
+	 */
 	private final IJavaElement sourceElement;
 
+	/**
+	 * Constructor
+	 * @param elem
+	 */
 	public Cluster(IJavaElement elem) {
 		id = counter;
 		this.sourceElement = elem;
@@ -40,6 +57,10 @@ public class Cluster implements Cloneable {
 	}
 	
 	@Override
+	/**
+	 * Makes a new cluster object with the same source element, but a new ID.
+	 * Needed for cloning networks
+	 */
 	public Object clone() {
 		Cluster cloned = new Cluster(sourceElement);
 		
@@ -71,8 +92,6 @@ public class Cluster implements Cloneable {
 			return false;
 		return true;
 	}
-	
-	
 	
 
 }

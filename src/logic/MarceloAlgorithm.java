@@ -6,13 +6,26 @@ import java.util.Iterator;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.jgrapht.Graphs;
 
+/**
+ * A modularizing algorithm authord by Marcelo
+ * @author vahan
+ *
+ */
 public class MarceloAlgorithm extends Algorithm {
 
+	/**
+	 * Constructor
+	 * @param network
+	 * @param nSteps
+	 */
 	public MarceloAlgorithm(Network network, int nSteps) {
 		super(network, "Marcelo", nSteps);
 	}
 
 	@Override
+	/**
+	 * Marcelo knows how it works
+	 */
 	public Network optimize() {
 		int time = 0;
 		Network changedNetwork = (Network) network.clone();
@@ -27,8 +40,13 @@ public class MarceloAlgorithm extends Algorithm {
 		return changedNetwork;
 	}
 
-	protected Network change(Network changedNetwork,
-			HashMap<ICompilationUnit, Cluster> moduleAssignments) {
+	/**
+	 * Commits a random change to the network
+	 * @param changedNetwork
+	 * @param moduleAssignments
+	 * @return
+	 */
+	protected Network change(Network changedNetwork, HashMap<ICompilationUnit, Cluster> moduleAssignments) {
 		ICompilationUnit rndVertex = changedNetwork.getRandomVertex(rnd);
 		// Count the number of dependencies to the same module as well as to other modules
 		HashMap<Cluster, Integer> moduleDependencies = new HashMap<Cluster, Integer>();

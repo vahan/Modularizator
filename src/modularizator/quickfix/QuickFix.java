@@ -1,6 +1,5 @@
 package modularizator.quickfix;
 
-
 import modularizator.Fixer;
 import modularizator.actions.BaseAction;
 
@@ -9,12 +8,24 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ui.IMarkerResolution;
 
+/**
+ * Used to fix the modularizator markers
+ * @author vahan
+ *
+ */
 public class QuickFix implements IMarkerResolution {
-
+	/**
+	 * 
+	 */
 	public final static String ATTRIBUTE_NEWSOURCE = "newsource";
-	
+	/**
+	 * The fixer object that makes fix
+	 */
 	private Fixer fixer;
-	
+	/**
+	 * Constructor
+	 * @param marker
+	 */
 	public QuickFix(IMarker marker) {
 		this.fixer = new Fixer(marker);
 	}

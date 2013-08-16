@@ -9,20 +9,39 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
 
+/**
+ * Creates a properties view for the plugin
+ * @author vahan
+ *
+ */
 public class PropertiesView extends ViewPart {
+	/**
+	 * Lable for T
+	 */
 	private Label labelT;
+	/**
+	 * Label for nSteps
+	 */
 	private Label labelNSteps;
+	/**
+	 * Text entry box for T
+	 */
 	private Text textT;
+	/**
+	 * Text entry box for nSteps
+	 */
 	private Text textNSteps;
-
+	/**
+	 * Constructor
+	 */
 	public PropertiesView() {
 		super();
 	}
-
+	@Override
 	public void setFocus() {
 		labelT.setFocus();
 	}
-
+	@Override
 	public void createPartControl(Composite parent) {
 		GridLayout grid = new GridLayout(2, true);
 		parent.setLayout(grid);

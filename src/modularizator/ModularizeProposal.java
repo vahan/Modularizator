@@ -8,28 +8,33 @@ import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 
+/**
+ * Proposals for the markers
+ * @author vahan
+ *
+ */
 public class ModularizeProposal implements IJavaCompletionProposal {
-
+	/**
+	 * The new package where the file is suggested to be moved
+	 */
 	private final IPackageFragment suggestedPackage;
-	
-	private static final int relevance = 5;
-	
+	/**
+	 * Constructor
+	 * @param suggestedPackage
+	 */
 	public ModularizeProposal(IPackageFragment suggestedPackage) {
 		this.suggestedPackage = suggestedPackage;
 	}
 	
-	
 	@Override
 	public int getRelevance() {
-		return relevance;
+		return 5;
 	}
 
 	@Override
 	public void apply(IDocument document) {
 		// TODO Auto-generated method stub
 		MessageDialog.openInformation(null, "Changes were applied", "Changes were applied");
-		
-		
 	}
 
 	@Override

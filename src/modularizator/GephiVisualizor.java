@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
@@ -44,14 +45,25 @@ import processing.core.PApplet;
 import logic.Cluster;
 import logic.Network;
 
+/**
+ * Visualizes the network using Gephi toolkit
+ * @author vahan
+ *
+ */
 public class GephiVisualizor extends JFrame implements Runnable {
 	
 	/**
-	 * 
+	 * Randomly generated serion version UID
 	 */
 	private static final long serialVersionUID = -5978940395530143652L;
+	/**
+	 * The network to be visualized
+	 */
 	private final Network network;
-	
+	/**
+	 * Constructor
+	 * @param network
+	 */
 	public GephiVisualizor(Network network) {
 		this.network = network;
 	}
@@ -61,13 +73,17 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		exportAndOpen();
 		//showInApplet();
 	}
-	
+	/**
+	 * Exports the graph into a PDF file
+	 * And opens it.
+	 * TODO remove the file after closing it
+	 */
 	public void exportAndOpen() {
 		//Preview
 		PApplet applet = makeApplet();
 		//Export
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
-		String fileName = "/home/vahan/Desktop/" + network.getName() + ".pdf";
+		String fileName = /*"/home/vahan/Desktop/" + */network.getName() + "_" + new Date().getTime() + ".pdf";
 		File file = new File(fileName);
 		try {
 			ec.exportFile(file);
@@ -83,7 +99,12 @@ public class GephiVisualizor extends JFrame implements Runnable {
 			return;
 		}
 	}
-	
+	@Deprecated
+	/**
+	 * Shows the graph in a Java Applet.
+	 * But can't show more than one at a time, 
+	 * in those cases exportAndOpen() should be used
+	 */
 	public void showInApplet() {
 		PApplet applet = makeApplet();
 		//Add the applet to a JFrame and display it
@@ -96,7 +117,10 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		pack();
 		setVisible(true);
 	}
-	
+	/**
+	 * Does all required procedures to prepare for showing the applet or exporting
+	 * @return	The applet to be shown
+	 */
 	public PApplet makeApplet() {
 		DirectedGraph dGraph = makeGephiGraph(network);
 
@@ -121,7 +145,11 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		
 		return applet;
 	}
-
+	/**
+	 * Converts the network into a gephi graph
+	 * @param network
+	 * @return
+	 */
 	private DirectedGraph makeGephiGraph(Network network) {
 		// Init a project - and therefore a workspace
 		ProjectController pc = Lookup.getDefault().lookup(ProjectController.class);
@@ -150,7 +178,10 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		}
 		return dGraph;
 	}
-	
+	/**
+	 * Sets the preview attributes
+	 * @return
+	 */
 	private PreviewController setPreviewAttributes() {
 		// Preview configuration
 		PreviewController previewController = Lookup.getDefault().lookup(PreviewController.class);
@@ -163,7 +194,10 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		previewController.refreshPreview();
 		return previewController;
 	}
-	
+	/**
+	 * Runs the Yifan Hu layout algorithm on the network
+	 * @param graphModel
+	 */
 	private void runYifanHuLayoutAlg(GraphModel graphModel) {
 		// Run Yifan Hu layout algorithm on the graph
 		YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
@@ -175,24 +209,36 @@ public class GephiVisualizor extends JFrame implements Runnable {
 			layout.goAlgo();
 		}
 	}
-	
+	/**
+	 * Colors the graph according to labels
+	 * @param dGraph
+	 */
 	private void color(DirectedGraph dGraph) {
 		//Partition the graph and color accordingly
 		PartitionController partitionController = Lookup.getDefault().lookup(PartitionController.class);
 		AttributeModel attributeModel = Lookup.getDefault().lookup(AttributeController.class).getModel();
+		@SuppressWarnings("rawtypes")
 		Partition p = partitionController.buildPartition(attributeModel.getNodeTable().getColumn("label"), dGraph);
 		NodeColorTransformer nodeColorTransformer = new NodeColorTransformer();
 		nodeColorTransformer.randomizeColors(p);
 		partitionController.transform(p, nodeColorTransformer);
 	}
-	
+	/**
+	 * Creates a name for the vertex
+	 * @param vertex
+	 * @return
+	 */
 	private String vertexName(ICompilationUnit vertex) {
 		Cluster cluster = network.getCluster(vertex);
 		String vertexName = vertex.getElementName().substring(0, vertex.getElementName().lastIndexOf("."));
 		String name = format(cluster.getModel().getElementName()) + "_" + vertexName;
 		return name;
 	}
-	
+	/**
+	 * Replaces . with _
+	 * @param name
+	 * @return
+	 */
 	private String format(String name) {
 		String formatted = StringUtils.replace(name, ".", "_");
 		return formatted;
