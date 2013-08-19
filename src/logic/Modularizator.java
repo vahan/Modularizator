@@ -27,13 +27,21 @@ public class Modularizator {
 	 */
 	private int nSteps;
 	/**
+	 * Number of iterations for the layout algorithm (Yifan Hu)
+	 */
+	private int layoutSteps;
+	/**
 	 * Default value for T
 	 */
 	private static double T_DEFAULT = 1.0/2000000;
 	/**
 	 * Default value for nSteps
 	 */
-	private static int NSTEPS_DEFAULT = 1000;
+	private static int NSTEPS_DEFAULT = 10000;
+	/**
+	 * Default number of iterations for the layout algorithm (Yifan Hu)
+	 */
+	private static int LAYOUT_STEPS_DEFAULT = 10000;
 	/**
 	 * The only instance of the object
 	 */
@@ -42,6 +50,7 @@ public class Modularizator {
 	private Modularizator() {
 		T = T_DEFAULT;
 		nSteps = NSTEPS_DEFAULT;
+		layoutSteps = LAYOUT_STEPS_DEFAULT;
 	}
 
 	/**
@@ -77,6 +86,14 @@ public class Modularizator {
 	
 	public void setNSteps(int nSteps) {
 		this.nSteps = nSteps;
+	}
+	
+	public int getLayoutSteps() {
+		return layoutSteps;
+	}
+	
+	public void setLayoutSteps(int layoutSteps) {
+		this.layoutSteps = layoutSteps;
 	}
 
 	/**

@@ -46,9 +46,11 @@ public class ModularizeAction extends BaseAction {
 		double newScore = new MarceloScorer(optimizedNetwork).getScore();
 		double oldScore = new MarceloScorer(network).getScore();
 		showSuggestions(modularizator.getChanges());
-		MessageDialog.openInformation(shell, "Score", "Current score is "
+		String msg = "Current score is "
 				+ Double.toString(oldScore) + "\n" + "The new score will be "
-				+ Double.toString(newScore));
+				+ Double.toString(newScore);
+		MessageDialog.openInformation(shell, "Score", msg);
+		System.out.println(msg);
 		showVisualizations(network, optimizedNetwork);
 	}
 	/**

@@ -1,6 +1,7 @@
 package logic;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
@@ -62,7 +63,7 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 	}
 
 	public int clustersCount() {
-		return clusters.size();
+		return new HashSet<Cluster>(clusters.values()).size();
 	}
 	/**
 	 * Adds a vertex to a cluster

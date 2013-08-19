@@ -44,6 +44,7 @@ import org.openide.util.Lookup;
 
 import processing.core.PApplet;
 import logic.Cluster;
+import logic.Modularizator;
 import logic.Network;
 
 /**
@@ -71,7 +72,7 @@ public class GephiVisualizor extends JFrame implements Runnable {
 	
 	@Override
 	public void run() {
-		exportAndOpen();
+		exportAndOpen("svg");
 		//showInApplet();
 	}
 	/**
@@ -79,12 +80,12 @@ public class GephiVisualizor extends JFrame implements Runnable {
 	 * And opens it.
 	 * TODO remove the file after closing it
 	 */
-	public void exportAndOpen() {
+	public void exportAndOpen(String ext) {
 		//Preview
 		PApplet applet = makeApplet();
 		//Export
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
-		String fileName = /*"/home/vahan/Desktop/" + */network.getName() + "_" + new Date().getTime() + ".pdf";
+		String fileName = /*"/home/vahan/Desktop/" + */network.getName() + "_" + new Date().getTime() + "." + ext;
 		File file = new File(fileName);
 		try {
 			ec.exportFile(file);
@@ -127,6 +128,7 @@ public class GephiVisualizor extends JFrame implements Runnable {
 
         System.out.println("Nodes: " + dGraph.getNodeCount());
         System.out.println("Edges: " + dGraph.getEdgeCount());
+        System.out.println("Clusters: " + network.clustersCount());
         
 		GraphModel graphModel = dGraph.getGraphModel();
 		//Run the layout algorithm
@@ -142,7 +144,7 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		//Refresh the preview and reset the zoom
 		previewController.render(target);
 		target.refresh();
-		//target.resetZoom();
+		target.resetZoom();
 		
 		return applet;
 	}
@@ -210,7 +212,8 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		layout.resetPropertiesValues();
 		layout.setOptimalDistance(20f);
 		layout.initAlgo();
-		for (int i = 0; i < 100 && layout.canAlgo(); ++i) {
+		Modularizator modularizator = Modularizator.getInstance();
+		for (int i = 0; i < modularizator.getLayoutSteps() && layout.canAlgo(); ++i) {
 			layout.goAlgo();
 		}
 	}
