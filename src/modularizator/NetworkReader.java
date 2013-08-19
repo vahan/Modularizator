@@ -97,7 +97,7 @@ public class NetworkReader {
 		network.addVertex(target);
 		String elemName = target.getElementName();
 		elemName = elemName.substring(0, elemName.lastIndexOf("."));
-		System.out.println("--------" + elemName);
+		//System.out.println("--------" + elemName);
 		SearchPattern pattern = SearchPattern.createPattern(elemName,
 				IJavaSearchConstants.TYPE, IJavaSearchConstants.REFERENCES, SearchPattern.R_EXACT_MATCH);
 		if (pattern == null)

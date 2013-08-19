@@ -1,5 +1,6 @@
 package modularizator.actions;
 
+import java.util.Date;
 import java.util.HashMap;
 
 import logic.Algorithm;
@@ -42,7 +43,12 @@ public class ModularizeAction extends BaseAction {
 		modularizator.initAlgorithm(network);
 		algorithm = modularizator.getAlgorithm();
 
+		System.out.println("Starting running the modularization algorithm");
+		Date start = new Date();
 		Network optimizedNetwork = algorithm.optimize();
+		Date end = new Date();
+		System.out.println("Finished after " + (end.getTime() - start.getTime()) * 100 + "seconds");
+		
 		double newScore = new MarceloScorer(optimizedNetwork).getScore();
 		double oldScore = new MarceloScorer(network).getScore();
 		showSuggestions(modularizator.getChanges());
@@ -60,14 +66,14 @@ public class ModularizeAction extends BaseAction {
 	 * @param newNetwork
 	 */
 	private void showVisualizations(Network oldNetwork, Network newNetwork) {
-		GephiVisualizor oldWin = new GephiVisualizor(oldNetwork);
-		oldWin.run();
-		//Thread oldThread = new Thread(oldWin);
-		//oldThread.start();
 		GephiVisualizor newWin = new GephiVisualizor(newNetwork);
 		//Thread newThread = new Thread(newWin);
 		//newThread.start();
 		newWin.run();
+		GephiVisualizor oldWin = new GephiVisualizor(oldNetwork);
+		oldWin.run();
+		//Thread oldThread = new Thread(oldWin);
+		//oldThread.start();
 	}
 	/**
 	 * Shows all markers arising after running the modularization algorithm
@@ -88,13 +94,12 @@ public class ModularizeAction extends BaseAction {
 				marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
 				marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_WARNING);
 				marker.setAttribute(QuickFix.ATTRIBUTE_NEWSOURCE, newSourceName);
-				System.out.println(marker.exists());
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 				continue;
 			}
-			System.out.println("Move class '" + compUnit.getElementName() + "' to " + cluster.getModel().getElementName());
+			//System.out.println("Move class '" + compUnit.getElementName() + "' to " + cluster.getModel().getElementName());
 		}
 	}
 }

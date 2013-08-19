@@ -37,7 +37,7 @@ public class Modularizator {
 	/**
 	 * Default value for nSteps
 	 */
-	private static int NSTEPS_DEFAULT = 10000;
+	private static int NSTEPS_DEFAULT = 100000;
 	/**
 	 * Default number of iterations for the layout algorithm (Yifan Hu)
 	 */
