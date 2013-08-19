@@ -47,7 +47,7 @@ public class ModularizeAction extends BaseAction {
 		Date start = new Date();
 		Network optimizedNetwork = algorithm.optimize();
 		Date end = new Date();
-		System.out.println("Finished after " + (end.getTime() - start.getTime()) * 100 + "seconds");
+		System.out.println("Finished after " + (end.getTime() - start.getTime()) / 100 + " seconds");
 		
 		double newScore = new MarceloScorer(optimizedNetwork).getScore();
 		double oldScore = new MarceloScorer(network).getScore();
