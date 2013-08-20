@@ -39,15 +39,20 @@ public class ModularizeAction extends BaseAction {
 	 */
 	@Override
 	public void run(IAction action) {
+		System.out.println("Reading the network");
+		Date start = new Date();
 		Network network = readNetwork();
+		Date end = new Date();
+		System.out.println("Done in " + (end.getTime() - start.getTime()) / 100 + " seconds");
+		
 		modularizator.initAlgorithm(network);
 		algorithm = modularizator.getAlgorithm();
 
-		System.out.println("Starting running the modularization algorithm");
-		Date start = new Date();
+		System.out.println("Running the modularization algorithm");
+		start = new Date();
 		Network optimizedNetwork = algorithm.optimize();
-		Date end = new Date();
-		System.out.println("Finished after " + (end.getTime() - start.getTime()) / 100 + " seconds");
+		end = new Date();
+		System.out.println("Done in " + (end.getTime() - start.getTime()) / 100 + " seconds");
 		
 		double newScore = new MarceloScorer(optimizedNetwork).getScore();
 		double oldScore = new MarceloScorer(network).getScore();
@@ -57,7 +62,12 @@ public class ModularizeAction extends BaseAction {
 				+ Double.toString(newScore);
 		MessageDialog.openInformation(shell, "Score", msg);
 		System.out.println(msg);
+		
+		System.out.println("Showing the visualizations");
+		start = new Date();
 		showVisualizations(network, optimizedNetwork);
+		end = new Date();
+		System.out.println("Done in " + (end.getTime() - start.getTime()) / 100 + " seconds");
 	}
 	/**
 	 * Shows the network before and after modularization
@@ -68,13 +78,13 @@ public class ModularizeAction extends BaseAction {
 	private void showVisualizations(Network oldNetwork, Network newNetwork) {
 		long id = new Date().getTime();
 		GephiVisualizor newWin = new GephiVisualizor(newNetwork, id);
-		//Thread newThread = new Thread(newWin);
-		//newThread.start();
-		newWin.run();
+		Thread newThread = new Thread(newWin);
+		newThread.start();
+		//newWin.run();
 		GephiVisualizor oldWin = new GephiVisualizor(oldNetwork, id);
-		oldWin.run();
-		//Thread oldThread = new Thread(oldWin);
-		//oldThread.start();
+		Thread oldThread = new Thread(oldWin);
+		oldThread.start();
+		//oldWin.run();
 	}
 	/**
 	 * Shows all markers arising after running the modularization algorithm

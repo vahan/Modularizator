@@ -216,7 +216,7 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
 		layout.setGraphModel(graphModel);
 		layout.resetPropertiesValues();
-		layout.setOptimalDistance(30f);
+		layout.setOptimalDistance(20f);
 		layout.initAlgo();
 		Modularizator modularizator = Modularizator.getInstance();
 		for (int i = 0; i < modularizator.getLayoutSteps() && layout.canAlgo(); ++i) {
