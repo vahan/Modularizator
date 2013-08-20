@@ -63,16 +63,21 @@ public class GephiVisualizor extends JFrame implements Runnable {
 	 */
 	private final Network network;
 	/**
+	 * Identifier for the output files
+	 */
+	private final long id;
+	/**
 	 * Constructor
 	 * @param network
 	 */
-	public GephiVisualizor(Network network) {
+	public GephiVisualizor(Network network, long id) {
 		this.network = network;
+		this.id = id;
 	}
 	
 	@Override
 	public void run() {
-		exportAndOpen("png");
+		exportAndOpen("png"); //TODO: make the output type editable for the user
 		//showInApplet();
 	}
 	/**
@@ -85,7 +90,8 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		PApplet applet = makeApplet();
 		//Export
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
-		String fileName = /*"/home/vahan/Desktop/" + */network.getName() + "_" + new Date().getTime() + "." + ext;
+		String outputFolder = ""; //TODO: take it from the GUI
+		String fileName = outputFolder + network.getName() + "_" + id + "." + ext;
 		File file = new File(fileName);
 		try {
 			ec.exportFile(file);

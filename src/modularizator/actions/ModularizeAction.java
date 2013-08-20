@@ -66,11 +66,12 @@ public class ModularizeAction extends BaseAction {
 	 * @param newNetwork
 	 */
 	private void showVisualizations(Network oldNetwork, Network newNetwork) {
-		GephiVisualizor newWin = new GephiVisualizor(newNetwork);
+		long id = new Date().getTime();
+		GephiVisualizor newWin = new GephiVisualizor(newNetwork, id);
 		//Thread newThread = new Thread(newWin);
 		//newThread.start();
 		newWin.run();
-		GephiVisualizor oldWin = new GephiVisualizor(oldNetwork);
+		GephiVisualizor oldWin = new GephiVisualizor(oldNetwork, id);
 		oldWin.run();
 		//Thread oldThread = new Thread(oldWin);
 		//oldThread.start();

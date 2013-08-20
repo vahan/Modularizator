@@ -1,6 +1,7 @@
 package modularizator.actions;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 
 import org.eclipse.jface.action.IAction;
 
@@ -21,9 +22,9 @@ public class VisualizeAction extends BaseAction {
 	@Override
 	public void run(IAction action) {
 		network = readNetwork();
-		
+		long id = new Date().getTime();
 		try {
-			GephiVisualizor win = new GephiVisualizor(network);
+			GephiVisualizor win = new GephiVisualizor(network, id);
 			javax.swing.SwingUtilities.invokeAndWait(win);
 		} catch (InvocationTargetException | InterruptedException e) {
 			// TODO Auto-generated catch block

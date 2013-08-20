@@ -6,8 +6,10 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -42,8 +44,8 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 	public Network(Class<? extends DefaultEdge> edgeClass, HashMap<ICompilationUnit, Cluster> clusters, String name) {
 		super(edgeClass);
 		this.clusters = clusters;
-		this.name = name;
 		initVertices();
+		this.name = getProjectName() + name;
 	}
 	
 	public HashMap<ICompilationUnit, Cluster> getClusters() {
@@ -55,7 +57,7 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 	}
 	
 	public void setName(String name) {
-		this.name = name;
+		this.name = getProjectName() + name;
 	}
 	
 	public Cluster getCluster(Object vertex) {
@@ -94,6 +96,7 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 	public void changeClusterAssignment(ICompilationUnit vertex, Cluster newCluster) {
 		clusters.put(vertex, newCluster);
 	}
+	
 	/**
 	 * Adds a new vertex to a cluster representing the given java element
 	 * @param compUnit	The vertex to add
@@ -104,6 +107,8 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 		if (cluster == null)
 			cluster = new Cluster(elem);
 		clusters.put(compUnit, cluster);
+		if (clusters.size() == 1)
+			name = getProjectName() + name;
 	}
 	
 	@Override
@@ -122,6 +127,7 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 		
 		return cloned;
 	}
+	
 	/**
 	 * Adds all vertices of all clusters into the network
 	 */
@@ -129,7 +135,19 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 		for (ICompilationUnit vertex : clusters.keySet()) {
 			super.addVertex(vertex);
 		}
-		
+	}
+	
+	/**
+	 * Finds out the name of the project
+	 * @return	Name of the project
+	 */
+	private String getProjectName() {
+		if (clusters.size() == 0)
+			return "";
+		Entry<ICompilationUnit, Cluster> entry = clusters.entrySet().iterator().next();
+		ICompilationUnit compUnit = entry.getKey();
+		IJavaProject project = compUnit.getJavaProject();
+		return project.getElementName() + "_";
 	}
 
 }
