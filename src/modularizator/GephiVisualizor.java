@@ -15,8 +15,6 @@ import javax.swing.JOptionPane;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.MessageBox;
 import org.gephi.data.attributes.api.AttributeController;
 import org.gephi.data.attributes.api.AttributeModel;
 import org.gephi.graph.api.DirectedGraph;
@@ -150,7 +148,7 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		//Refresh the preview and reset the zoom
 		previewController.render(target);
 		target.refresh();
-		target.resetZoom();
+		//target.resetZoom();
 		
 		return applet;
 	}
@@ -213,15 +211,19 @@ public class GephiVisualizor extends JFrame implements Runnable {
 	 */
 	private void runYifanHuLayoutAlg(GraphModel graphModel) {
 		// Run Yifan Hu layout algorithm on the graph
+		System.out.println("Running Yifan Hu layout algorithm;");
+		Date start = new Date();
 		YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
 		layout.setGraphModel(graphModel);
 		layout.resetPropertiesValues();
-		layout.setOptimalDistance(20f);
+		//layout.setOptimalDistance(20f);
 		layout.initAlgo();
 		Modularizator modularizator = Modularizator.getInstance();
 		for (int i = 0; i < modularizator.getLayoutSteps() && layout.canAlgo(); ++i) {
 			layout.goAlgo();
 		}
+		Date end = new Date();
+		System.out.println("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
 	}
 	/**
 	 * Colors the graph according to labels

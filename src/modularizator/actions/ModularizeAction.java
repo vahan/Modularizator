@@ -43,7 +43,7 @@ public class ModularizeAction extends BaseAction {
 		Date start = new Date();
 		Network network = readNetwork();
 		Date end = new Date();
-		System.out.println("Done in " + (end.getTime() - start.getTime()) / 100 + " seconds");
+		System.out.println("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
 		
 		modularizator.initAlgorithm(network);
 		algorithm = modularizator.getAlgorithm();
@@ -52,7 +52,7 @@ public class ModularizeAction extends BaseAction {
 		start = new Date();
 		Network optimizedNetwork = algorithm.optimize();
 		end = new Date();
-		System.out.println("Done in " + (end.getTime() - start.getTime()) / 100 + " seconds");
+		System.out.println("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
 		
 		double newScore = new MarceloScorer(optimizedNetwork).getScore();
 		double oldScore = new MarceloScorer(network).getScore();
@@ -67,7 +67,7 @@ public class ModularizeAction extends BaseAction {
 		start = new Date();
 		showVisualizations(network, optimizedNetwork);
 		end = new Date();
-		System.out.println("Done in " + (end.getTime() - start.getTime()) / 100 + " seconds");
+		System.out.println("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
 	}
 	/**
 	 * Shows the network before and after modularization
@@ -78,13 +78,13 @@ public class ModularizeAction extends BaseAction {
 	private void showVisualizations(Network oldNetwork, Network newNetwork) {
 		long id = new Date().getTime();
 		GephiVisualizor newWin = new GephiVisualizor(newNetwork, id);
-		Thread newThread = new Thread(newWin);
-		newThread.start();
-		//newWin.run();
+		//Thread newThread = new Thread(newWin);
+		//newThread.start();
+		newWin.run();
 		GephiVisualizor oldWin = new GephiVisualizor(oldNetwork, id);
-		Thread oldThread = new Thread(oldWin);
-		oldThread.start();
-		//oldWin.run();
+		//Thread oldThread = new Thread(oldWin);
+		//oldThread.start();
+		oldWin.run();
 	}
 	/**
 	 * Shows all markers arising after running the modularization algorithm
