@@ -89,10 +89,12 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		//Export
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
 		String outputFolder = ""; //TODO: take it from the GUI
-		String fileName = outputFolder + network.getName() + "_" + id + "." + ext;
-		File file = new File(fileName);
+		String fileName = outputFolder + network.getName() + "_" + id;
+		String fileNameDotExtension = fileName + "." + ext;
+		File file = new File(fileNameDotExtension);
 		try {
 			ec.exportFile(file);
+			ec.exportFile(new File(fileName + "." + "gexf"));
 			if (Desktop.isDesktopSupported()) {
 				Desktop.getDesktop().open(file);
 			}
@@ -146,10 +148,14 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		PApplet applet = target.getApplet();
 		applet.init();
 		//Refresh the preview and reset the zoom
-		previewController.render(target);
+		try {
+			previewController.render(target);
+		} catch (Exception e) {
+			//sun.dc.pr.PRError: setPenT4: invalid pen transformation (singular)
+			e.printStackTrace();
+		}
 		target.refresh();
-		//target.resetZoom();
-		
+		target.resetZoom();
 		return applet;
 	}
 	/**
@@ -216,7 +222,7 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
 		layout.setGraphModel(graphModel);
 		layout.resetPropertiesValues();
-		//layout.setOptimalDistance(20f);
+		layout.setOptimalDistance(10f);
 		layout.initAlgo();
 		Modularizator modularizator = Modularizator.getInstance();
 		for (int i = 0; i < modularizator.getLayoutSteps() && layout.canAlgo(); ++i) {
