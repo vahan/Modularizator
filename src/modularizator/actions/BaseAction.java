@@ -1,8 +1,8 @@
 package modularizator.actions;
 
-import logic.Modularizator;
-import logic.Network;
 import modularizator.NetworkReader;
+import modularizator.logic.Modularizator;
+import modularizator.logic.Network;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;

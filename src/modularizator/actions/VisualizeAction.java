@@ -5,8 +5,8 @@ import java.util.Date;
 
 import org.eclipse.jface.action.IAction;
 
-import logic.Network;
 import modularizator.GephiVisualizor;
+import modularizator.logic.Network;
 
 /**
  * Used to shows the network via Gephi toolkit

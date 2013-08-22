@@ -1,7 +1,7 @@
 package modularizator.actions;
 
-import logic.Network;
-import logic.Scorer;
+import modularizator.logic.Network;
+import modularizator.logic.Scorer;
 
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;

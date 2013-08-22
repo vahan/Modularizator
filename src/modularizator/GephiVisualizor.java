@@ -41,9 +41,9 @@ import org.jgrapht.graph.DefaultEdge;
 import org.openide.util.Lookup;
 
 import processing.core.PApplet;
-import logic.Cluster;
-import logic.Modularizator;
-import logic.Network;
+import modularizator.logic.Cluster;
+import modularizator.logic.Modularizator;
+import modularizator.logic.Network;
 
 /**
  * Visualizes the network using Gephi toolkit
@@ -88,7 +88,7 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		PApplet applet = makeApplet();
 		//Export
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
-		String outputFolder = ""; //TODO: take it from the GUI
+		String outputFolder = Modularizator.getInstance().getOutputFolder();
 		String fileName = outputFolder + network.getName() + "_" + id;
 		String fileNameDotExtension = fileName + "." + ext;
 		File file = new File(fileNameDotExtension);
@@ -131,10 +131,12 @@ public class GephiVisualizor extends JFrame implements Runnable {
 	 */
 	public PApplet makeApplet() {
 		DirectedGraph dGraph = makeGephiGraph(network);
+		
+		Logger logger = Modularizator.getInstance().getLogger();
 
-        System.out.println("Nodes: " + dGraph.getNodeCount());
-        System.out.println("Edges: " + dGraph.getEdgeCount());
-        System.out.println("Clusters: " + network.clustersCount());
+        logger.addLog("Nodes: " + dGraph.getNodeCount());
+        logger.addLog("Edges: " + dGraph.getEdgeCount());
+        logger.addLog("Clusters: " + network.clustersCount());
         
 		GraphModel graphModel = dGraph.getGraphModel();
 		//Run the layout algorithm
@@ -217,7 +219,8 @@ public class GephiVisualizor extends JFrame implements Runnable {
 	 */
 	private void runYifanHuLayoutAlg(GraphModel graphModel) {
 		// Run Yifan Hu layout algorithm on the graph
-		System.out.println("Running Yifan Hu layout algorithm;");
+		Logger logger = Modularizator.getInstance().getLogger();
+		logger.addLog("Running Yifan Hu layout algorithm;");
 		Date start = new Date();
 		YifanHuLayout layout = new YifanHuLayout(null, new StepDisplacement(1f));
 		layout.setGraphModel(graphModel);
@@ -229,7 +232,7 @@ public class GephiVisualizor extends JFrame implements Runnable {
 			layout.goAlgo();
 		}
 		Date end = new Date();
-		System.out.println("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
+		logger.addLog("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
 	}
 	/**
 	 * Colors the graph according to labels

@@ -2,8 +2,8 @@ package modularizator;
 
 import java.util.HashMap;
 
-import logic.Cluster;
-import logic.Network;
+import modularizator.logic.Cluster;
+import modularizator.logic.Network;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;

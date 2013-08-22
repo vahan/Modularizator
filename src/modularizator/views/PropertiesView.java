@@ -1,10 +1,13 @@
 package modularizator.views;
 
-import logic.Modularizator;
+import modularizator.logic.Modularizator;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
@@ -20,25 +23,38 @@ public class PropertiesView extends ViewPart {
 	 */
 	private Label labelT;
 	/**
-	 * Label for nSteps
-	 */
-	private Label labelNSteps;
-	/**
-	 * Label for layout steps
-	 */
-	private Label labelLayoutSteps;
-	/**
 	 * Text entry box for T
 	 */
 	private Text textT;
+	/**
+	 * Label for nSteps
+	 */
+	private Label labelNSteps;
 	/**
 	 * Text entry box for nSteps
 	 */
 	private Text textNSteps;
 	/**
+	 * Label for layout steps
+	 */
+	private Label labelLayoutSteps;
+	/**
 	 * Text entry box for layoutSteps
 	 */
 	private Text textLayoutSteps;
+	/**
+	 * Label for output folder
+	 */
+	private Label labelOutputFolder;
+	/**
+	 * Button for opening the dialog
+	 */
+	private Button buttonOutputFolder;
+	/**
+	 * Label to show the output folder
+	 */
+	private Label labelShowOutputFolder;
+	
 	/**
 	 * Constructor
 	 */
@@ -92,6 +108,29 @@ public class PropertiesView extends ViewPart {
 			}
 		};
 		textT.addModifyListener(listenerLayoutSteps);
+		// outputFolder
+		labelOutputFolder = new Label(parent, 0);
+		labelOutputFolder.setText("Output folder");
+		buttonOutputFolder = new Button(parent, SWT.PUSH);
+		buttonOutputFolder.setText("Browse...");
+		GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		data.horizontalSpan = 4;
+		labelShowOutputFolder = new Label(parent, SWT.BORDER);
+		labelShowOutputFolder.setLayoutData(data);
+		final Shell shell = this.getSite().getShell();
+		buttonOutputFolder.addSelectionListener(new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent event) {
+				DirectoryDialog dlg = new DirectoryDialog(shell);
+				dlg.setText("Output folder");
+				dlg.setMessage("Select the output directory");
+				String dir = dlg.open();
+				if (dir != null) {
+					Modularizator modularizator = Modularizator.getInstance();
+					modularizator.setOutputFolder(dir);
+					labelShowOutputFolder.setText(dir);
+				}
+			}
+		});
 	}
 
 }

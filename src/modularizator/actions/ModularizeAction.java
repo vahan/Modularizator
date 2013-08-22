@@ -3,11 +3,13 @@ package modularizator.actions;
 import java.util.Date;
 import java.util.HashMap;
 
-import logic.Algorithm;
-import logic.Cluster;
-import logic.MarceloScorer;
-import logic.Network;
+import modularizator.logic.Modularizator;
 import modularizator.GephiVisualizor;
+import modularizator.Logger;
+import modularizator.logic.Algorithm;
+import modularizator.logic.Cluster;
+import modularizator.logic.MarceloScorer;
+import modularizator.logic.Network;
 import modularizator.quickfix.QuickFix;
 
 import org.eclipse.core.resources.IMarker;
@@ -27,7 +29,11 @@ public class ModularizeAction extends BaseAction {
 	 * The algorithm to be used for modularizing
 	 */
 	private Algorithm algorithm;
-
+	/**
+	 * The active network
+	 */
+	private Network network = null;
+	
 	/**
 	 * The constructor.
 	 */
@@ -39,20 +45,21 @@ public class ModularizeAction extends BaseAction {
 	 */
 	@Override
 	public void run(IAction action) {
-		System.out.println("Reading the network");
+		Logger logger = Modularizator.getInstance().getLogger();
+		logger.addLog("Reading the network");
 		Date start = new Date();
-		Network network = readNetwork();
+		network = readNetwork();
 		Date end = new Date();
-		System.out.println("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
+		logger.addLog("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
 		
 		modularizator.initAlgorithm(network);
 		algorithm = modularizator.getAlgorithm();
 
-		System.out.println("Running the modularization algorithm");
+		logger.addLog("Running the modularization algorithm");
 		start = new Date();
 		Network optimizedNetwork = algorithm.optimize();
 		end = new Date();
-		System.out.println("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
+		logger.addLog("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
 		
 		double newScore = new MarceloScorer(optimizedNetwork).getScore();
 		double oldScore = new MarceloScorer(network).getScore();
@@ -61,13 +68,16 @@ public class ModularizeAction extends BaseAction {
 				+ Double.toString(oldScore) + "\n" + "The new score will be "
 				+ Double.toString(newScore);
 		MessageDialog.openInformation(shell, "Score", msg);
-		System.out.println(msg);
+		logger.addLog(msg);
 		
-		System.out.println("Showing the visualizations");
+		logger.addLog("Showing the visualizations");
 		start = new Date();
-		showVisualizations(network, optimizedNetwork);
+		long id = start.getTime();
+		showVisualizations(network, optimizedNetwork, id);
 		end = new Date();
-		System.out.println("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
+		logger.addLog("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
+		String outputFolder = Modularizator.getInstance().getOutputFolder();
+		logger.save(outputFolder + "/" + network.getName() + "_log_" + id + ".txt");
 	}
 	/**
 	 * Shows the network before and after modularization
@@ -75,8 +85,7 @@ public class ModularizeAction extends BaseAction {
 	 * @param oldNetwork
 	 * @param newNetwork
 	 */
-	private void showVisualizations(Network oldNetwork, Network newNetwork) {
-		long id = new Date().getTime();
+	private void showVisualizations(Network oldNetwork, Network newNetwork, long id) {
 		GephiVisualizor newWin = new GephiVisualizor(newNetwork, id);
 		//Thread newThread = new Thread(newWin);
 		//newThread.start();
@@ -110,7 +119,8 @@ public class ModularizeAction extends BaseAction {
 				e.printStackTrace();
 				continue;
 			}
-			//System.out.println("Move class '" + compUnit.getElementName() + "' to " + cluster.getModel().getElementName());
+			//Modularizator.getInstance().addLog("Move class '" + compUnit.getElementName() + "' to " + cluster.getModel().getElementName());
 		}
 	}
+	
 }
