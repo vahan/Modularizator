@@ -89,7 +89,7 @@ public class GephiVisualizor extends JFrame implements Runnable {
 		//Export
 		ExportController ec = Lookup.getDefault().lookup(ExportController.class);
 		String outputFolder = Modularizator.getInstance().getOutputFolder();
-		String fileName = outputFolder + network.getName() + "_" + id;
+		String fileName = outputFolder + "/" + network.getName() + "_" + id;
 		String fileNameDotExtension = fileName + "." + ext;
 		File file = new File(fileNameDotExtension);
 		try {
