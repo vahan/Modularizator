@@ -7,7 +7,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.jgrapht.Graphs;
 
 /**
- * A modularizing algorithm authord by Marcelo
+ * A modularizing algorithm authored by Marcelo
  * @author vahan
  *
  */

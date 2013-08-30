@@ -2,6 +2,7 @@ package modularizator.logic;
 
 import java.util.HashMap;
 
+import modularizator.AlgorithmTypes;
 import modularizator.Logger;
 
 
@@ -13,9 +14,13 @@ import modularizator.Logger;
  */
 public class Modularizator {
 	/**
-	 * A modularizing algorithm to run on the network
+	 * The currently active modularizing algorithm to run on the network
 	 */
-	private Algorithm algorithm;
+	private Algorithm activeAlgorithm;
+	/**
+	 * The type of the active algorithm
+	 */
+	private AlgorithmTypes activeAlgorithmType = AlgorithmTypes.Marcelo;
 	/**
 	 * A network scoring method
 	 */
@@ -80,7 +85,7 @@ public class Modularizator {
 	}
 
 	public Algorithm getAlgorithm() {
-		return algorithm;
+		return activeAlgorithm;
 	}
 	
 	public Scorer getScorer() {
@@ -123,11 +128,29 @@ public class Modularizator {
 		return logger;
 	}
 	
+	public AlgorithmTypes getActiveAlgorithmType() {
+		return activeAlgorithmType;
+	}
+
+	public void setActiveAlgorithmType(AlgorithmTypes activeAlgorithmType) {
+		if (activeAlgorithmType == null)
+			return;
+		this.activeAlgorithmType = activeAlgorithmType;
+	}
+	
 	/**
-	 * Initializes all algorithm objects
+	 * Initializes the active algorithm object
 	 */
 	public void initAlgorithm(Network network) {
-		algorithm = new MarceloAlgorithm(network, nSteps);
+		switch (activeAlgorithmType) {
+		case Marcelo:
+			activeAlgorithm = new MarceloAlgorithm(network, nSteps);
+			break;
+		case MILP:
+			activeAlgorithm = new MILPAlgorithm(network, nSteps);
+			break;
+		}
+		
 	}
 	/**
 	 * Initializes all scoring objects
@@ -141,7 +164,7 @@ public class Modularizator {
 	 * @return
 	 */
 	public HashMap<Object, Cluster> getChanges() {
-		return algorithm.getChanges();
+		return activeAlgorithm.getChanges();
 	}
 
 }

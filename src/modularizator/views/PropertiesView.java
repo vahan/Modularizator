@@ -1,5 +1,6 @@
 package modularizator.views;
 
+import modularizator.AlgorithmTypes;
 import modularizator.logic.Modularizator;
 
 import org.eclipse.swt.SWT;
@@ -7,6 +8,7 @@ import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
@@ -54,6 +56,14 @@ public class PropertiesView extends ViewPart {
 	 * Label to show the output folder
 	 */
 	private Label labelShowOutputFolder;
+	/**
+	 * Label for the algorithm type
+	 */
+	private Label labelAlgorithm;
+	/**
+	 * Combo for the algorithm type
+	 */
+	private Combo comboAlgorithm;
 	
 	/**
 	 * Constructor
@@ -74,40 +84,37 @@ public class PropertiesView extends ViewPart {
 		labelT.setText("T");
 		textT = new Text(parent, SWT.BORDER_SOLID);
 		textT.setText(Double.toString(Modularizator.getInstance().getT()));
-		ModifyListener listenerT = new ModifyListener() {
+		textT.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				Text source = (Text) e.getSource();
 				double val = Double.parseDouble(source.getText().trim());
 				Modularizator.getInstance().setT(val);
 			}
-		};
-		textT.addModifyListener(listenerT);
+		});
 		// nSteps
 		labelNSteps = new Label(parent, 0);
 		labelNSteps.setText("Number of Steps");
 		textNSteps = new Text(parent, SWT.BORDER_SOLID);
 		textNSteps.setText(Integer.toString(Modularizator.getInstance().getNSteps()));
-		ModifyListener listenerNSteps = new ModifyListener() {
+		textNSteps.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				Text source = (Text) e.getSource();
 				int val = Integer.parseInt(source.getText().trim());
 				Modularizator.getInstance().setNSteps(val);
 			}
-		};
-		textNSteps.addModifyListener(listenerNSteps);
+		});
 		// layoutSteps
 		labelLayoutSteps = new Label(parent, 0);
 		labelLayoutSteps.setText("Number of steps for the layout algorithm");
 		textLayoutSteps = new Text(parent, SWT.BORDER_SOLID);
 		textLayoutSteps.setText(Integer.toString(Modularizator.getInstance().getLayoutSteps()));
-		ModifyListener listenerLayoutSteps = new ModifyListener() {
+		textT.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
 				Text source = (Text) e.getSource();
 				int val = Integer.parseInt(source.getText().trim());
 				Modularizator.getInstance().setLayoutSteps(val);
 			}
-		};
-		textT.addModifyListener(listenerLayoutSteps);
+		});
 		// outputFolder
 		labelOutputFolder = new Label(parent, 0);
 		labelOutputFolder.setText("Output folder");
@@ -129,6 +136,28 @@ public class PropertiesView extends ViewPart {
 					modularizator.setOutputFolder(dir);
 					labelShowOutputFolder.setText(dir);
 				}
+			}
+		});
+		//Algorithm type
+		labelAlgorithm = new Label(parent, 0);
+		labelAlgorithm.setText("Algorithm");
+		comboAlgorithm = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		final AlgorithmTypes[] algTypes = AlgorithmTypes.values();
+		for (int i = 0; i < algTypes.length; ++i) { //keep the indexing
+			comboAlgorithm.add(algTypes[i].toString());
+			if (algTypes[i].equals(AlgorithmTypes.getDefault())) {
+				comboAlgorithm.select(comboAlgorithm.getItemCount() - 1);
+			}
+		}
+		comboAlgorithm.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				Combo source = (Combo) e.getSource();
+				int sel = source.getSelectionIndex();
+				Modularizator.getInstance().setActiveAlgorithmType(sel == -1 ? null : algTypes[sel]);
+			}
+			public void widgetDefaultSelected(SelectionEvent e) {
+				// TODO Auto-generated method stub
+				widgetSelected(e);
 			}
 		});
 	}
