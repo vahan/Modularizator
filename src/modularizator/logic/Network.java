@@ -107,22 +107,7 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 			name = getProjectName() + name;
 	}
 	
-	
-	public double getTurboMQ() {
-		double turboMQ = 0;
-		HashSet<Cluster> clusters = new HashSet<Cluster>();
-		for (Cluster cluster : this.clusters.values()) {
-			if (clusters.contains(cluster))
-				continue;
-			clusters.add(cluster);
-			turboMQ += getCF(cluster);
-		}
-		
-		return turboMQ;
-	}
-	
-	
-	private double getCF(Cluster cluster) {
+	public double getCF(Cluster cluster) {
 		double intraEdgesSum = 0;
 		double interEdgesSum = 0;
 		
