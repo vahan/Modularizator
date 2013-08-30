@@ -23,8 +23,22 @@ public class MILPAlgorithm extends Algorithm {
 		clonedNetwork = preprocessEliminateSymmetrics(clonedNetwork);
 		clonedNetwork = preprocessValidInequalitiesUpperBounds(clonedNetwork);
 		
-		return clonedNetwork;
+		//Construct and solve the MILP
+		Network optimizedNetwork = solveMILP(clonedNetwork);
+		
+		return optimizedNetwork;
 	}
+	
+	/**
+	 * Constructs and solves the MILP described in section 3.3 of the referenced paper
+	 * @param network
+	 */
+	private Network solveMILP(Network network) {
+		
+		
+		return network;
+	}
+	
 	
 	/**
 	 * Performs preprocessing step to decrease the number of variables of the constructed MILP.

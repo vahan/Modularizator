@@ -21,5 +21,11 @@ The same menu also contains
 	Clear Markers - Clears all markers made by the Modularizator plugin.
 	Modulzarize - This will run the modularization algorithm, give output images and graph exports, also it will add markers on files that are suggested to be moved.
 
+ADDING NEW ALGORITHMS/SCORERS (FOR DEVELOPPERS)
+To add a new algorithm or a scorer make sure to implement the following steps:
+	Create the according class (in package modularizator.logic) extending Algorithm / Scorer
+	Add the appropriate type to the AlgorithmTypes / ScorerTypes enum
+	Add the appropriate case to the switch structure in Modularizator.initAlgorithm() / initScorer() method
+
 Have fun!
 
