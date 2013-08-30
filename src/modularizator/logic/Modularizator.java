@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import modularizator.AlgorithmTypes;
 import modularizator.Logger;
+import modularizator.ScorerTypes;
 
 
 /**
@@ -20,11 +21,15 @@ public class Modularizator {
 	/**
 	 * The type of the active algorithm
 	 */
-	private AlgorithmTypes activeAlgorithmType = AlgorithmTypes.Marcelo;
+	private AlgorithmTypes activeAlgorithmType = AlgorithmTypes.getDefault();
 	/**
 	 * A network scoring method
 	 */
-	private Scorer scorer;
+	private Scorer activeScorer;
+	/**
+	 * The type of the active scorer
+	 */
+	private ScorerTypes activeScorerType = ScorerTypes.getDefault();
 	/**
 	 * Temperature, network measure
 	 */
@@ -84,12 +89,12 @@ public class Modularizator {
 		return instance;
 	}
 
-	public Algorithm getAlgorithm() {
+	public Algorithm getActiveAlgorithm() {
 		return activeAlgorithm;
 	}
 	
-	public Scorer getScorer() {
-		return scorer;
+	public Scorer getActiveScorer() {
+		return activeScorer;
 	}
 	
 	public double getT() {
@@ -137,6 +142,16 @@ public class Modularizator {
 			return;
 		this.activeAlgorithmType = activeAlgorithmType;
 	}
+
+	public ScorerTypes getActiveScorerType() {
+		return activeScorerType;
+	}
+
+	public void setActiveScorerType(ScorerTypes activeScorerType) {
+		if (activeScorerType == null)
+			return;
+		this.activeScorerType = activeScorerType;
+	}
 	
 	/**
 	 * Initializes the active algorithm object
@@ -152,12 +167,20 @@ public class Modularizator {
 		}
 		
 	}
+	
 	/**
 	 * Initializes all scoring objects
 	 * @param network
 	 */
 	public void initScorer(Network network) {
-		scorer = new MarceloScorer(network);
+		switch (activeScorerType) {
+		case Marcelo:
+			activeScorer = new MarceloScorer(network);
+			break;
+		case Turbo:
+			activeScorer = new TurboScorer(network);
+			break;
+		}
 	}
 	/**
 	 * Gives the changes made after running the algorithm

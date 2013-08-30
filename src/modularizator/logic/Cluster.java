@@ -2,7 +2,9 @@ package modularizator.logic;
 
 
 import java.util.HashMap;
+import java.util.HashSet;
 
+import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 
 /**
@@ -27,6 +29,10 @@ public class Cluster implements Cloneable {
 	 * The Java source element that is represented by the cluster. Usually a package
 	 */
 	private final IJavaElement sourceElement;
+	/**
+	 * Vertices contained in this cluster
+	 */
+	private final HashSet<ICompilationUnit> vertices = new HashSet<ICompilationUnit>();
 
 	/**
 	 * Constructor
@@ -54,6 +60,10 @@ public class Cluster implements Cloneable {
 	
 	public IJavaElement getModel() {
 		return sourceElement;
+	}
+	
+	public HashSet<ICompilationUnit> getVertices() {
+		return vertices;
 	}
 	
 	@Override

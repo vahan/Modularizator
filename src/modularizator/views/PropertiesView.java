@@ -1,6 +1,7 @@
 package modularizator.views;
 
 import modularizator.AlgorithmTypes;
+import modularizator.ScorerTypes;
 import modularizator.logic.Modularizator;
 
 import org.eclipse.swt.SWT;
@@ -64,6 +65,15 @@ public class PropertiesView extends ViewPart {
 	 * Combo for the algorithm type
 	 */
 	private Combo comboAlgorithm;
+	/**
+	 * Label for the scorer type
+	 */
+	private Label labelScorer;
+	/**
+	 * Combo for the scorer type
+	 */
+	private Combo comboScorer;
+	
 	
 	/**
 	 * Constructor
@@ -156,7 +166,27 @@ public class PropertiesView extends ViewPart {
 				Modularizator.getInstance().setActiveAlgorithmType(sel == -1 ? null : algTypes[sel]);
 			}
 			public void widgetDefaultSelected(SelectionEvent e) {
-				// TODO Auto-generated method stub
+				widgetSelected(e);
+			}
+		});
+		//Scorer type
+		labelScorer = new Label(parent, 0);
+		labelScorer.setText("Scorer");
+		comboScorer = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY);
+		final ScorerTypes[] scorerTypes = ScorerTypes.values();
+		for (int i = 0; i < scorerTypes.length; ++i) { //keep the indexing
+			comboScorer.add(scorerTypes[i].toString());
+			if (scorerTypes[i].equals(ScorerTypes.getDefault())) {
+				comboScorer.select(comboScorer.getItemCount() - 1);
+			}
+		}
+		comboScorer.addSelectionListener(new SelectionListener() {
+			public void widgetSelected(SelectionEvent e) {
+				Combo source = (Combo) e.getSource();
+				int sel = source.getSelectionIndex();
+				Modularizator.getInstance().setActiveScorerType(sel == -1 ? null : scorerTypes[sel]);
+			}
+			public void widgetDefaultSelected(SelectionEvent e) {
 				widgetSelected(e);
 			}
 		});

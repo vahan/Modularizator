@@ -24,10 +24,10 @@ public class ScoreAction extends BaseAction {
 	private void showScore() {
 		Network network = readNetwork();
 		modularizator.initScorer(network);
-		Scorer scorer = modularizator.getScorer();
+		Scorer scorer = modularizator.getActiveScorer();
 		double score = scorer.getScore();
 		
-		MessageDialog.openInformation(shell, "Score", Double.toString(score));
+		MessageDialog.openInformation(shell, scorer.getType().toString() + " Score", Double.toString(score));
 	}
 
 

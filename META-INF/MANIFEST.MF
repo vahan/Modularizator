@@ -19,4 +19,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  libs/jgrapht-jdk1.6.jar,
  libs/commons-lang3-3.1.jar,
- libs/gephi-toolkit.jar
+ libs/gephi-toolkit.jar,
+ libs/glazedlists_java15-1.9.0-javadoc.jar,
+ libs/glazedlists_java15-1.9.0-sources.jar,
+ libs/glazedlists_java15-1.9.0.jar

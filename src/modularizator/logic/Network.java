@@ -9,6 +9,7 @@ import java.util.Set;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.jgrapht.Graphs;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 
@@ -66,14 +67,7 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 	public int clustersCount() {
 		return new HashSet<Cluster>(clusters.values()).size();
 	}
-	/**
-	 * Adds a vertex to a cluster
-	 * @param vertex	the vertex to add
-	 * @param cluster	the cluster were the vertex is added
-	 */
-	public void add(ICompilationUnit vertex, Cluster cluster) {
-		clusters.put(vertex, cluster);
-	}
+	
 	/**
 	 * Gives a randomly chosen vertex from the network.
 	 * @param rnd	Pseudo-random number generator
@@ -93,7 +87,9 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 	 * @param newCluster	The new cluster where the object will be moved
 	 */
 	public void changeClusterAssignment(ICompilationUnit vertex, Cluster newCluster) {
+		clusters.get(vertex).getVertices().remove(vertex);
 		clusters.put(vertex, newCluster);
+		newCluster.getVertices().add(vertex);
 	}
 	
 	/**
@@ -106,9 +102,45 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 		if (cluster == null)
 			cluster = new Cluster(elem);
 		clusters.put(compUnit, cluster);
+		cluster.getVertices().add(compUnit);
 		if (clusters.size() == 1)
 			name = getProjectName() + name;
 	}
+	
+	
+	public double getTurboMQ() {
+		double turboMQ = 0;
+		HashSet<Cluster> clusters = new HashSet<Cluster>();
+		for (Cluster cluster : this.clusters.values()) {
+			if (clusters.contains(cluster))
+				continue;
+			clusters.add(cluster);
+			turboMQ += getCF(cluster);
+		}
+		
+		return turboMQ;
+	}
+	
+	
+	private double getCF(Cluster cluster) {
+		double intraEdgesSum = 0;
+		double interEdgesSum = 0;
+		
+		for (ICompilationUnit v : cluster.getVertices()) {
+			for (Object u : Graphs.neighborListOf(this, v)) {
+				if (cluster.equals(clusters.get(u)))
+					intraEdgesSum++;
+				else
+					interEdgesSum++;
+			}
+		}
+		
+		if (intraEdgesSum == 0)
+			return 0;
+		double cf = intraEdgesSum / (intraEdgesSum + interEdgesSum / 2);
+		return cf;
+	}
+	
 	
 	@Override
 	/**

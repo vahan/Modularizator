@@ -53,7 +53,7 @@ public class ModularizeAction extends BaseAction {
 		logger.addLog("Done in " + (end.getTime() - start.getTime()) / 1000 + " seconds");
 		
 		modularizator.initAlgorithm(network);
-		algorithm = modularizator.getAlgorithm();
+		algorithm = modularizator.getActiveAlgorithm();
 
 		logger.addLog("Running the modularization algorithm");
 		start = new Date();

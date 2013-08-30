@@ -3,6 +3,8 @@ package modularizator.logic;
 
 import java.util.Set;
 
+import modularizator.ScorerTypes;
+
 import org.jgrapht.graph.DefaultEdge;
 
 /**
@@ -17,7 +19,7 @@ public class MarceloScorer extends Scorer {
 	 * @param network
 	 */
 	public MarceloScorer(Network network) {
-		super(network);
+		super(network, ScorerTypes.Marcelo);
 	}
 	
 	@Override
