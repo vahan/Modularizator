@@ -11,6 +11,8 @@ To open the plugin's view in Eclipse go to Window -> Show View -> Other and doub
 	Number of Steps - The number of steps to run the algorithm. The default value is 100.000
 	Number of steps for the layout algorithm - The number of steps for the layout algorithm. Here Yifun Hu's layout algorithm is used for visualizing networks. The default value is 10.000
 	Output folder - The folder where all the output files (PNG images and GEXF XML outputs of the network before and after modularization and a .TXT log file). The default value is the current folder.
+	Algorithm - Here you can choose which modularization algorithm to run.
+	Scorer - Here you can choose which scorer method to use for showing the modularization score
 
 CONTEXT MENU.
 To run the algorithm right-click on the project, go the Modularizator menu and choose Modularize. 

@@ -22,4 +22,5 @@ Bundle-ClassPath: .,
  libs/gephi-toolkit.jar,
  libs/glazedlists_java15-1.9.0-javadoc.jar,
  libs/glazedlists_java15-1.9.0-sources.jar,
- libs/glazedlists_java15-1.9.0.jar
+ libs/glazedlists_java15-1.9.0.jar,
+ libs/cplex.jar
