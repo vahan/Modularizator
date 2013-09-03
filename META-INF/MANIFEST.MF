@@ -23,4 +23,5 @@ Bundle-ClassPath: .,
  libs/glazedlists_java15-1.9.0-javadoc.jar,
  libs/glazedlists_java15-1.9.0-sources.jar,
  libs/glazedlists_java15-1.9.0.jar,
- libs/cplex.jar
+ libs/cplex.jar,
+ libs/guava-14.0.1.jar

@@ -4,10 +4,19 @@ import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloNumExpr;
 import ilog.concert.IloNumVar;
-import ilog.concert.IloObjective;
 import ilog.cplex.IloCplex;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map.Entry;
+
+import org.apache.batik.dom.util.HashTable;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.jgrapht.graph.DefaultEdge;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 /**
  * Uses the MILP formulation of the problem found in 
@@ -16,8 +25,11 @@ import java.util.HashSet;
  *
  */
 public class MILPAlgorithm extends Algorithm {
-
-	protected MILPAlgorithm(Network network, int nSteps) {
+	
+	private HashBiMap<ICompilationUnit, Integer> vertices = HashBiMap.create();
+	private HashBiMap<Cluster, Integer> clusters = HashBiMap.create();
+	
+	public MILPAlgorithm(Network network, int nSteps) {
 		super(network, "MILP", nSteps);
 	}
 
@@ -25,12 +37,8 @@ public class MILPAlgorithm extends Algorithm {
 	public Network optimize() {
 		// TODO Auto-generated method stub
 		System.out.println("Running the MILP algorithm like a boss");
-		//Preprocessing steps
-		Network clonedNetwork = (Network) network.clone();
-		clonedNetwork = preprocessNodes(clonedNetwork);
-		clonedNetwork = preprocessValidInequalitiesStructure(clonedNetwork);
-		clonedNetwork = preprocessEliminateSymmetrics(clonedNetwork);
-		clonedNetwork = preprocessValidInequalitiesUpperBounds(clonedNetwork);
+		//Preprocessing
+		Network clonedNetwork = preprocess(network);
 		
 		//Construct and solve the MILP
 		Network optimizedNetwork = solveMILP(clonedNetwork);
@@ -43,10 +51,11 @@ public class MILPAlgorithm extends Algorithm {
 	 * @param network
 	 */
 	private Network solveMILP(Network network) {
-		HashSet<Cluster> clusters = new HashSet<Cluster>(network.getClusters().values());
-		int K = clusters.size(); //number of clusters
-		int V = network.getClusters().size(); //number of vertices
-		int E = network.edgeSet().size(); //number of edges
+		init(network);
+		
+		int V = network.vertexSet().size(); //number of vertices
+		int K = V; // new HashSet<Cluster>(network.getClusters().values()).size(); //number of clusters
+		double[][] c = coeffs(network);
 		
 		try {
 			IloCplex cplex = new IloCplex(); //create a cplex object
@@ -54,7 +63,7 @@ public class MILPAlgorithm extends Algorithm {
 			IloNumVar[] r = cplex.numVarArray(K, 0.0, 1.0); // (43)
 			IloNumVar[][] s = new IloNumVar[V][K];
 			IloIntVar[][] x = new IloIntVar[V][K];
-			IloNumVar[][][] t = new IloNumVar[V][V][K];
+			IloNumVar[][][] t = new IloIntVar[V][V][K];
 			for (int u = 0; u < V; ++u) {
 				s[u] = cplex.numVarArray(K, 0.0, 1.0); // (44)
 				x[u] = cplex.boolVarArray(K); // (46)
@@ -62,9 +71,9 @@ public class MILPAlgorithm extends Algorithm {
 			}
 			for (int u = 0; u < V; ++u) {
 				for (int v = 0; v < V; ++v) {
-					t[u][v] = cplex.numVarArray(K, 0.0, 1.0); //(45)
+					t[u][v] = cplex.boolVarArray(K); //(45), it must be binary
 					for (int k = 0; k < K; ++k) {
-						//cplex.addLe(t[u][v][k], x[u][k]); // (13)
+						//cplex.addLe(t[u][v][k], x[u][k]); // (13) //redundant?
 						cplex.addLe(t[u][v][k], x[v][k]); // (14)
 						cplex.addGe(t[u][v][k], cplex.sum(cplex.sum(x[u][k], x[v][k]), -1)); // (15)
 					}
@@ -86,7 +95,9 @@ public class MILPAlgorithm extends Algorithm {
 					for (int v = 0; v < V; ++v) {
 						sumS = cplex.sum(sumS, s[u][k]);
 						sumS = cplex.sum(sumS, s[v][k]);
+						sumS = cplex.prod(sumS, c[u][v]);
 						sumT = cplex.sum(sumT, t[u][v][k]);
+						sumT = cplex.prod(sumT, c[u][v]);
 					}
 				}
 				cplex.addEq(cplex.diff(sumS, cplex.prod(2, sumT)), 0); //(38)
@@ -99,6 +110,26 @@ public class MILPAlgorithm extends Algorithm {
 				System.err.println("Cplex was not able to find a feasible solution");
 			} else {
 				System.out.println("Successfully solved");
+				double[] rvals = cplex.getValues(r);
+				double[][] svals = new double[V][K];
+				double[][] xvals = new double[V][K];
+				double[][][] tvals = new double[V][V][K];
+				for (int u = 0; u < V; ++u) {
+					svals[u] = cplex.getValues(s[u]);
+					xvals[u] = cplex.getValues(x[u]);
+					for (int v = 0; v < V; ++v) {
+						tvals[u][v] = cplex.getValues(t[u][v]);
+					}
+				}
+				double[][][] wvals = new double[V][V][K];
+				for (int k = 0; k < K; ++k) {
+					for (int u = 0; u < V; ++u) {
+						for ( int v = 0; v < V; ++v) {
+							wvals[u][v][k] = xvals[u][k] - xvals[v][k] - 2 * tvals[u][v][k];
+						}
+					}
+				}
+				
 			}
 		} catch (IloException e) {
 			System.err.println("Concert exception caught: " + e); 
@@ -107,6 +138,46 @@ public class MILPAlgorithm extends Algorithm {
 		return network;
 	}
 	
+	
+	private void init(Network network) {
+		int vertexIndex = 0;
+		for (ICompilationUnit key : network.vertexSet()) {
+			vertices.put(key, vertexIndex);
+			vertexIndex++;
+		}
+	}
+	
+	
+	private double[][] coeffs(Network network) {
+		int V = network.vertexSet().size(); //number of vertices
+		
+		double[][] coeffs = new double[V][V];
+		for (DefaultEdge edge : network.edgeSet()) {
+			int u = -1;
+			int v = -1;
+			try {
+			u = vertices.get(network.getEdgeSource(edge));
+			v = vertices.get(network.getEdgeTarget(edge));
+			coeffs[u][v] = 1;
+			} catch (NullPointerException ex) {
+				int s = 1;
+				s++;
+			}
+		}
+		
+		return coeffs;
+	}
+	
+	
+	private Network preprocess(Network network) {
+		Network clonedNetwork = (Network) network.clone();
+		clonedNetwork = preprocessNodes(clonedNetwork);
+		clonedNetwork = preprocessValidInequalitiesStructure(clonedNetwork);
+		clonedNetwork = preprocessEliminateSymmetrics(clonedNetwork);
+		clonedNetwork = preprocessValidInequalitiesUpperBounds(clonedNetwork);
+		
+		return clonedNetwork;
+	}
 	
 	/**
 	 * Performs preprocessing step to decrease the number of variables of the constructed MILP.
