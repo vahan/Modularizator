@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragment;
 
 /**
  * Represents clusters of a network
@@ -61,8 +62,12 @@ public class Cluster implements Cloneable {
 		this(createPackage(project, path));
 	}
 	
-	private static IJavaElement createPackage(IJavaProject project, String path) {
-		//TODO: create the new folder and return it as IPackage
+	private static IPackageFragment createPackage(IJavaProject project, String path) {
+		//TODO: create the new folder and return it as IPackageFragment
+		
+		
+		
+		
 		return null;
 	}
 	

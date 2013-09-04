@@ -174,6 +174,8 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 	 */
 	private String getProjectName() {
 		IJavaProject project = getProject();
+		if (project == null)
+			return "";
 		return project.getElementName() + "_";
 	}
 
