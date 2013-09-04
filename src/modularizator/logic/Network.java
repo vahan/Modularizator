@@ -22,7 +22,6 @@ import org.jgrapht.graph.DefaultEdge;
  *
  */
 public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge> {
-
 	/**
 	 * Randomly generated serial version UID
 	 */
@@ -101,11 +100,17 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 		Cluster cluster = clusters.get(compUnit);
 		if (cluster == null)
 			cluster = new Cluster(elem);
+		add(compUnit, cluster);
+	}
+	
+	
+	public void add(ICompilationUnit compUnit, Cluster cluster) {
 		clusters.put(compUnit, cluster);
 		cluster.getVertices().add(compUnit);
 		if (clusters.size() == 1)
 			name = getProjectName() + name;
 	}
+	
 	
 	public double getCF(Cluster cluster) {
 		double intraEdgesSum = 0;
@@ -124,6 +129,16 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 			return 0;
 		double cf = intraEdgesSum / (intraEdgesSum + interEdgesSum / 2);
 		return cf;
+	}
+	
+	
+	public IJavaProject getProject() {
+		if (clusters.size() == 0)
+			return null;
+		Entry<ICompilationUnit, Cluster> entry = clusters.entrySet().iterator().next();
+		ICompilationUnit compUnit = entry.getKey();
+		IJavaProject project = compUnit.getJavaProject();
+		return project;
 	}
 	
 	
@@ -158,11 +173,7 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 	 * @return	Name of the project
 	 */
 	private String getProjectName() {
-		if (clusters.size() == 0)
-			return "";
-		Entry<ICompilationUnit, Cluster> entry = clusters.entrySet().iterator().next();
-		ICompilationUnit compUnit = entry.getKey();
-		IJavaProject project = compUnit.getJavaProject();
+		IJavaProject project = getProject();
 		return project.getElementName() + "_";
 	}
 

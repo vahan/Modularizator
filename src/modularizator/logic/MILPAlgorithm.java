@@ -1,21 +1,16 @@
 package modularizator.logic;
 
+import java.util.HashMap;
+
 import ilog.concert.IloException;
 import ilog.concert.IloIntVar;
 import ilog.concert.IloNumExpr;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map.Entry;
-
-import org.apache.batik.dom.util.HashTable;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.jgrapht.graph.DefaultEdge;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 /**
@@ -27,7 +22,6 @@ import com.google.common.collect.HashBiMap;
 public class MILPAlgorithm extends Algorithm {
 	
 	private HashBiMap<ICompilationUnit, Integer> vertices = HashBiMap.create();
-	private HashBiMap<Cluster, Integer> clusters = HashBiMap.create();
 	
 	public MILPAlgorithm(Network network, int nSteps) {
 		super(network, "MILP", nSteps);
@@ -47,6 +41,7 @@ public class MILPAlgorithm extends Algorithm {
 	}
 	
 	/**
+	 * TODO: Yeah, I know it's a huge method, but I'm also too lazy to split it
 	 * Constructs and solves the MILP described in section 3.3 of the referenced paper
 	 * @param network
 	 */
@@ -56,7 +51,7 @@ public class MILPAlgorithm extends Algorithm {
 		int V = network.vertexSet().size(); //number of vertices
 		int K = V; // new HashSet<Cluster>(network.getClusters().values()).size(); //number of clusters
 		double[][] c = coeffs(network);
-		
+		Network optimNetwork = null;
 		try {
 			IloCplex cplex = new IloCplex(); //create a cplex object
 			//add variables and constraints
@@ -109,40 +104,58 @@ public class MILPAlgorithm extends Algorithm {
 			if (!res) {
 				System.err.println("Cplex was not able to find a feasible solution");
 			} else {
+				//Interpret the solution into a network
+				HashMap<ICompilationUnit, Cluster> optimClusters = new HashMap<ICompilationUnit, Cluster>();
+				HashBiMap<Integer, Cluster> clusterIndices = HashBiMap.create();
 				System.out.println("Successfully solved");
-				double[] rvals = cplex.getValues(r);
-				double[][] svals = new double[V][K];
+				//double[] rvals = cplex.getValues(r);
+				//double[][] svals = new double[V][K];
 				double[][] xvals = new double[V][K];
-				double[][][] tvals = new double[V][V][K];
+				//double[][][] tvals = new double[V][V][K];
 				for (int u = 0; u < V; ++u) {
-					svals[u] = cplex.getValues(s[u]);
+					//svals[u] = cplex.getValues(s[u]);
 					xvals[u] = cplex.getValues(x[u]);
-					for (int v = 0; v < V; ++v) {
-						tvals[u][v] = cplex.getValues(t[u][v]);
+					for (int k = 0; k < K; ++k) {
+						if (xvals[u][k] == 0)
+							continue;
+						Cluster cluster = clusterIndices.get(k);
+						if (cluster == null) {
+							cluster = new Cluster(network.getProject(), "cluster_" + k);
+							clusterIndices.put(k, cluster);
+						}
+						
+						ICompilationUnit vertex = vertices.inverse().get(u);
+						network.add(vertex, cluster);
+						changes.put(vertex, cluster);
 					}
+					//for (int v = 0; v < V; ++v) {
+					//	tvals[u][v] = cplex.getValues(t[u][v]);
+					//}
 				}
-				double[][][] wvals = new double[V][V][K];
+				/*double[][][] wvals = new double[V][V][K];
 				for (int k = 0; k < K; ++k) {
 					for (int u = 0; u < V; ++u) {
 						for ( int v = 0; v < V; ++v) {
 							wvals[u][v][k] = xvals[u][k] - xvals[v][k] - 2 * tvals[u][v][k];
 						}
 					}
-				}
-				
+				}*/
+				optimNetwork = new Network(DefaultEdge.class,
+						optimClusters,
+						"Optimized structure");
 			}
 		} catch (IloException e) {
 			System.err.println("Concert exception caught: " + e); 
 		}
 		
-		return network;
+		return optimNetwork;
 	}
 	
 	
 	private void init(Network network) {
 		int vertexIndex = 0;
-		for (ICompilationUnit key : network.vertexSet()) {
-			vertices.put(key, vertexIndex);
+		for (ICompilationUnit vertex : network.vertexSet()) {
+			vertices.put(vertex, vertexIndex);
 			vertexIndex++;
 		}
 	}
@@ -153,16 +166,9 @@ public class MILPAlgorithm extends Algorithm {
 		
 		double[][] coeffs = new double[V][V];
 		for (DefaultEdge edge : network.edgeSet()) {
-			int u = -1;
-			int v = -1;
-			try {
-			u = vertices.get(network.getEdgeSource(edge));
-			v = vertices.get(network.getEdgeTarget(edge));
+			int u = vertices.get(network.getEdgeSource(edge));
+			int v = vertices.get(network.getEdgeTarget(edge));
 			coeffs[u][v] = 1;
-			} catch (NullPointerException ex) {
-				int s = 1;
-				s++;
-			}
 		}
 		
 		return coeffs;

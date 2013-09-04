@@ -1,11 +1,18 @@
 package modularizator.logic;
 
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import org.eclipse.core.resources.IFolder;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaProject;
 
 /**
  * Represents clusters of a network
@@ -36,6 +43,7 @@ public class Cluster implements Cloneable {
 
 	/**
 	 * Constructor
+	 * Creates a new cluster on an existing package
 	 * @param elem
 	 */
 	public Cluster(IJavaElement elem) {
@@ -43,6 +51,19 @@ public class Cluster implements Cloneable {
 		this.sourceElement = elem;
 		clusters.put(id, this);
 		counter++;
+	}
+	
+	/**
+	 * Creates a new cluster on a new package
+	 * @param name
+	 */
+	public Cluster(IJavaProject project, String path) {
+		this(createPackage(project, path));
+	}
+	
+	private static IJavaElement createPackage(IJavaProject project, String path) {
+		//TODO: create the new folder and return it as IPackage
+		return null;
 	}
 	
 	
