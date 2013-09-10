@@ -2,7 +2,7 @@ package modularizator.actions;
 
 import javax.swing.JOptionPane;
 
-import modularizator.Fixer;
+import modularizator.quickfix.Fixer;
 
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IResource;

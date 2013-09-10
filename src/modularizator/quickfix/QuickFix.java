@@ -1,6 +1,5 @@
 package modularizator.quickfix;
 
-import modularizator.Fixer;
 import modularizator.actions.BaseAction;
 
 import org.eclipse.core.resources.IMarker;

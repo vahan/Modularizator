@@ -14,6 +14,7 @@ import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.core.JavaCore;
 
 /**
  * Represents clusters of a network
@@ -64,7 +65,7 @@ public class Cluster implements Cloneable {
 	
 	private static IPackageFragment createPackage(IJavaProject project, String path) {
 		//TODO: create the new folder and return it as IPackageFragment
-		
+		// Use JavaCore.create() maybe
 		
 		
 		
