@@ -37,15 +37,15 @@ public class QuickFix implements IMarkerResolution {
 
 	@Override
 	public void run(IMarker marker) {
+		boolean success = fixer.fix();
+		if (!success)
+			return;
 		IResource resource = marker.getResource();
 		try {
 			resource.deleteMarkers(BaseAction.MARKER_TYPE, true, IResource.DEPTH_ZERO);
 		} catch (CoreException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		fixer.fix();
 	}
 	
 
