@@ -1,20 +1,12 @@
 package modularizator.logic;
 
 
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import org.eclipse.core.resources.IFolder;
-import org.eclipse.core.resources.IProject;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
-import org.eclipse.jdt.core.JavaCore;
 
 /**
  * Represents clusters of a network
@@ -72,11 +64,19 @@ public class Cluster implements Cloneable {
 		return null;
 	}
 	
-	
+	/**
+	 * Find the cluster with the given id
+	 * @param id	the ID to be searched for
+	 * @return		the cluster with the searched id
+	 */
 	public static Cluster getCluster(int id) {
 		return clusters.get(id);
 	}
 	
+	/**
+	 * Returns the number of so far created clusters
+	 * @return	the number of so far created clusters
+	 */
 	public static int getClustersCount() {
 		return counter;
 	}

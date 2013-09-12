@@ -5,10 +5,20 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+/**
+ * Used to make logs
+ * @author vahan
+ *
+ */
 public class Logger {
-	
+	/**
+	 * The log message
+	 */
 	private String log = "";
 	
+	/**
+	 * Default constructor
+	 */
 	public Logger() {
 		
 	}
@@ -17,6 +27,11 @@ public class Logger {
 		return log;
 	}
 	
+	/**
+	 * Adds the message to the log in a new line.
+	 * Also prints it out the default system output
+	 * @param msg	the log message to be added
+	 */
 	public void addLog(String msg) {
 		log += msg + "\n";
 		System.out.println(msg);

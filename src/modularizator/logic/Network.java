@@ -103,7 +103,11 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 		add(compUnit, cluster);
 	}
 	
-	
+	/**
+	 * Adds a vertex unit to a cluster
+	 * @param compUnit	the vertex to be added
+	 * @param cluster	the target cluster
+	 */
 	public void add(ICompilationUnit compUnit, Cluster cluster) {
 		clusters.put(compUnit, cluster);
 		cluster.getVertices().add(compUnit);
@@ -111,7 +115,11 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 			name = getProjectName() + name;
 	}
 	
-	
+	/**
+	 * Calculates and returns the CF value of the given cluster
+	 * @param cluster	the target cluster
+	 * @return			the calculated CF value
+	 */
 	public double getCF(Cluster cluster) {
 		double intraEdgesSum = 0;
 		double interEdgesSum = 0;
@@ -131,7 +139,10 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 		return cf;
 	}
 	
-	
+	/**
+	 * Finds and returns the java project which the network represents
+	 * @return	the used java project
+	 */
 	public IJavaProject getProject() {
 		if (clusters.size() == 0)
 			return null;

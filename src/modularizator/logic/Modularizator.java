@@ -71,6 +71,9 @@ public class Modularizator {
 	 */
 	private static Modularizator instance;
 
+	/**
+	 * Private default constructor, to provide the singletonness of the class
+	 */
 	private Modularizator() {
 		T = T_DEFAULT;
 		nSteps = NSTEPS_DEFAULT;
@@ -147,6 +150,10 @@ public class Modularizator {
 		return activeScorerType;
 	}
 
+	/**
+	 * Setter for activeScorerType
+	 * @param activeScorerType	the new activeScorerType, if null no changes are applied
+	 */
 	public void setActiveScorerType(ScorerTypes activeScorerType) {
 		if (activeScorerType == null)
 			return;

@@ -20,9 +20,16 @@ import com.google.common.collect.HashBiMap;
  *
  */
 public class MILPAlgorithm extends Algorithm {
-	
+	/**
+	 * Array of vertices synchronized with the according variable indices
+	 */
 	private HashBiMap<ICompilationUnit, Integer> vertices = HashBiMap.create();
 	
+	/**
+	 * Constructor
+	 * @param network
+	 * @param nSteps
+	 */
 	public MILPAlgorithm(Network network, int nSteps) {
 		super(network, "MILP", nSteps);
 	}
@@ -151,7 +158,10 @@ public class MILPAlgorithm extends Algorithm {
 		return optimNetwork;
 	}
 	
-	
+	/**
+	 * Assigns the vertices with according variable indices
+	 * @param network	the network which vertices are used
+	 */
 	private void init(Network network) {
 		int vertexIndex = 0;
 		for (ICompilationUnit vertex : network.vertexSet()) {
@@ -160,7 +170,13 @@ public class MILPAlgorithm extends Algorithm {
 		}
 	}
 	
-	
+	/**
+	 * Sets the coefficients matrix.
+	 * In the current implementation no weights are used, 
+	 * thus c[i][j] = 1 if and only if there is an edge connecting vertices i and j
+	 * @param network	the network to be used
+	 * @return			matrix of the coefficients
+	 */
 	private double[][] coeffs(Network network) {
 		int V = network.vertexSet().size(); //number of vertices
 		
@@ -174,7 +190,11 @@ public class MILPAlgorithm extends Algorithm {
 		return coeffs;
 	}
 	
-	
+	/**
+	 * Implement several preprocessing steps to improve computation time
+	 * @param network
+	 * @return
+	 */
 	private Network preprocess(Network network) {
 		Network clonedNetwork = (Network) network.clone();
 		clonedNetwork = preprocessNodes(clonedNetwork);

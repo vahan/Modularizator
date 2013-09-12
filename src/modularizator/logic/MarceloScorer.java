@@ -28,7 +28,7 @@ public class MarceloScorer extends Scorer {
 	}
 
 	/**
-	 * Marcelo know how it works
+	 * Marcelo knows how it works
 	 * @return
 	 */
 	private double newmanModularityDirected() {
