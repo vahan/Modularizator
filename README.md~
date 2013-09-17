@@ -14,7 +14,6 @@ To open the plugin's view in Eclipse go to Window -> Show View -> Other and doub
 	Algorithm - Here you can choose which modularization algorithm to run.
 	Scorer - Here you can choose which scorer method to use for showing the modularization score
 
-
 CONTEXT MENU.
 To run the algorithm right-click on the project, go the Modularizator menu and choose Modularize. 
 The same menu also contains
@@ -31,4 +30,13 @@ To add a new algorithm or a scorer make sure to implement the following steps:
 	Add the appropriate case to the switch structure in Modularizator.initAlgorithm() / initScorer() method
 
 Have fun!
+
+BUGS / TODOS:
+1. Now you have to close all other projects before modularizing, otherwise all open onces get into the network. Make sure to check if the compilation unit belongs to the desired project when reading it.
+2. Delete the according Marker from the Problems list, only if the file was actually moved
+3. Create the according package, if it doesn't exist while initializing a new Cluster 
+
+
+
+
 

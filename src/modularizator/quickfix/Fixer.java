@@ -100,6 +100,8 @@ public class Fixer {
 			//create move policy and processor for the compilation unit
 			IMovePolicy movePolicy = ReorgPolicyFactory.createMovePolicy(new IResource[] {compUnit.getResource()}, new IJavaElement[] {compUnit});
 			JavaMoveProcessor processor = new JavaMoveProcessor(movePolicy);
+			if (newSource == null)
+				return false;
 			processor.setDestination(ReorgDestinationFactory.createDestination(newSource));
 			//the refactoring object
 			Refactoring refactoring = new ProcessorBasedRefactoring(processor);

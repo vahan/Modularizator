@@ -1,18 +1,27 @@
 package modularizator.logic;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.HashSet;
+
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragment;
+import org.eclipse.jdt.internal.ui.actions.WorkbenchRunnableAdapter;
+import org.eclipse.jdt.internal.ui.wizards.NewPackageCreationWizard;
+import org.eclipse.jface.operation.IRunnableWithProgress;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * Represents clusters of a network
  * @author vahan
  *
  */
+@SuppressWarnings("restriction")
 public class Cluster implements Cloneable {
 	/**
 	 * Static counter to make unique IDs for each cluster
@@ -58,8 +67,25 @@ public class Cluster implements Cloneable {
 	private static IPackageFragment createPackage(IJavaProject project, String path) {
 		//TODO: create the new folder and return it as IPackageFragment
 		// Use JavaCore.create() maybe
+		NewPackageCreationWizard wizard = new NewPackageCreationWizard();
+		Shell activeShell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+		wizard.setContainer(new WizardDialog(activeShell, wizard));
 		
-		
+		WizardDialog dialog = new WizardDialog(activeShell, wizard);
+		dialog.create();
+		wizard.performFinish();
+		//dialog.();
+		/*IRunnableWithProgress runnable = null;
+		if (rule != null)
+			runnable= new WorkbenchRunnableAdapter(op, rule, true);
+		else
+			runnable= new WorkbenchRunnableAdapter(op, getSchedulingRule());
+		try {
+			dialog.run(true, true, runnable);
+		} catch (InvocationTargetException | InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		
 		return null;
 	}

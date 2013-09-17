@@ -31,3 +31,13 @@ To add a new algorithm or a scorer make sure to implement the following steps:
 
 Have fun!
 
+BUGS / TODOS:
+1. Now you have to close all other projects before modularizing, otherwise all open onces get into the network. Make sure to check if the compilation unit belongs to the desired project when reading it.
+2. Delete the according Marker from the Problems list, only if the file was actually moved
+3. Create the according package, if it doesn't exist while initializing a new Cluster
+ 
+
+
+
+
+

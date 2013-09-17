@@ -109,6 +109,7 @@ public class Network extends DefaultDirectedGraph<ICompilationUnit, DefaultEdge>
 	 * @param cluster	the target cluster
 	 */
 	public void add(ICompilationUnit compUnit, Cluster cluster) {
+		addVertex(compUnit);
 		clusters.put(compUnit, cluster);
 		cluster.getVertices().add(compUnit);
 		if (clusters.size() == 1)
